@@ -2,6 +2,7 @@ package com.spencergifts.lp.lpdb.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,5 +60,16 @@ public class UserController {
 
         this.userService.update(user, id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<User> delete(@PathVariable long id) {
+        Optional<User> user = userService.findById(id);
+
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        this.userService.delete(user.get());
+        return ResponseEntity.status(HttpStatus.OK).body(null);    
     }
 }

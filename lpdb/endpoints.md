@@ -17,3 +17,6 @@
 - in the body proved new user
 - only admin and active status will get changes as  
   other values are from Microsoft log in
+
+**DELETE api/users/{id}**
+- deletes user with given id

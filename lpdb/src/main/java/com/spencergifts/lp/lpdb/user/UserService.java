@@ -39,5 +39,7 @@ public class UserService
         userRepository.updateById(user.getAdmin(), user.getActive(), id);
     }
 
-
+    void delete(User user) {
+        this.userRepository.delete(user);
+    }
 }
