@@ -40,6 +40,7 @@ public class UserService
     }
 
     void delete(User user) {
+        // TODO: catch
         this.userRepository.delete(user);
     }
 }
