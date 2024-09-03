@@ -5,6 +5,8 @@ import { MainNavbar } from './components';
 import { Route, Routes } from 'react-router-dom';
 import {StorePage} from './pages';
 import FAQ from './pages/FAQ';
+import { Store } from './pages/components/Store';
+import StoreCreate from './pages/StoreCreate';
 
 
 
@@ -16,6 +18,8 @@ function App() {
         <Routes>
          <Route path='/' element={<Home/>} />
          <Route path='/stores' element={<StorePage/>} />
+         <Route path='/stores/:store_number' element={<Store/>} />
+         <Route path='/stores/create' element={<StoreCreate/>} />
          <Route path='/rm' element={<Contact/>} />
          <Route path='/faq' element={<FAQ/>} />
        </Routes>

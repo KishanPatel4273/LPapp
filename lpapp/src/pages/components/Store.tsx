@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 export type storeType = "SPIRIT" | "SPENCER";
 
@@ -48,11 +49,14 @@ const cellStyle: React.CSSProperties = {
     padding: '8px',
 };
 
-const Store = (props : props) => {
+const Store = () => {
+    let { store_number } = useParams();
+
+
     return (
         <div>
             <h1> 
-                {props.store.store_number}
+                {store_number}
             </h1>
         </div>
     )
