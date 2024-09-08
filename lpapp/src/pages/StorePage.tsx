@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import { store } from './components/Store';
-import { YearSelector, storeYearOptions } from './components/StoreSearchBar';
+import { YearSelector } from './components/StoreSearchBar';
 import { 
     MaterialReactTable, 
     MRT_ShowHideColumnsButton, 
@@ -12,7 +12,6 @@ import {
 } from 'material-react-table';
 import { MRT_ColumnDef } from 'material-react-table'; // Adjust import based on your library
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
 import AddStoreButton from './components/AddStoreButton';
 
 const stores_: store[] = Array.from({ length: 100 }, (_, index) => ({
@@ -25,12 +24,22 @@ const stores_: store[] = Array.from({ length: 100 }, (_, index) => ({
     year: `${2024 - (index % 5)}`,
     previous_store_id: index === 0 ? 0 : index,
     store_number: `${61000 + index}`,
+    latitude: 1,
+    longitude: 1, 
+    total_square_foot: 1,
+    poss_date: new Date(),
+    create_date: new Date(), 
+    allows_early_drop: true, 
+    live_load: false, 
+    extended_stay: true, 
+    stay_length: 1
 }));
 
 const StorePage = () => {
     const navigate = useNavigate();
 
-    const [selectedYear, setSelectedYear] = useState(storeYearOptions[0]); // this sets the default to current year
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString()); // this sets the default to current year
+    const [selectedStoreType, setSelectedStoreType] = useState<"SPIRIT" | "SPENCER">("SPIRIT"); // this sets the default to current year
 
     const columns = useMemo<MRT_ColumnDef<any, any>[]>(
         () => [
@@ -74,35 +83,41 @@ const StorePage = () => {
         [],
     );
 
-    const s1: store = {
-        store_id: 1,
-        store_type: "SPIRIT",
-        address: "1030 South White Rd.",
-        city: "San Jose",
-        state: "CA",
-        zip: "95127",
-        year: "2024",
-        previous_store_id: 0,
-        store_number: "61089"
-    };
-
-    const data: store[] = stores_;
-
+    const [storeData, setStoreData] = useState<store[]>([])
+    const data = stores_
     const [test, setTest] = useState("");
+
+    const getD = () => {
+        const d = fetch('http://localhost:8080/api/stores', {method: 'GET'})
+        .then((response: Response) => response.json()) // Parse the JSON response
+        .then((data : store[]) => {
+            console.log("Stores list:", data); // Log the JSON data
+            setStoreData(data); 
+        })
+        .catch((error) => {
+            console.error('Error fetching the stores:', error);
+        });
+        console.log('test', d)
+
+        return d
+    }
+    useEffect(() => {
+        getD()
+    }, [])
 
     const table = useMaterialReactTable({
         columns,
-        data,
+        data: storeData,
         initialState: { showGlobalFilter: true },
         enableStickyHeader: true,
         enablePagination: false,
         muiTableBodyCellProps: ({ cell, column, row, table }) => ({
             onDoubleClick: (event) => {
-                navigate(`/stores/${row.original.store_number}`)
+                navigate(`/stores/${row.original.store_number}`, {state:row.original})
             },
         }),
         renderTopToolbarCustomActions: ({ table }) => (
-            <AddStoreButton onClick={() => {navigate('/stores/create')}}/>
+            <AddStoreButton onClick={() => {selectedStoreType === 'SPIRIT' ? navigate('/stores/spirit/create') : navigate('/stores/spencer/create')}} storeType={selectedStoreType} setStoreType={setSelectedStoreType}/>
           ),
         renderToolbarInternalActions: ({ table }) => (
             <>

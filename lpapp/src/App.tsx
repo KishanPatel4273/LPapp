@@ -1,12 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { MainNavbar } from './components';
 import { Route, Routes } from 'react-router-dom';
 import {StorePage} from './pages';
 import FAQ from './pages/FAQ';
 import { Store } from './pages/components/Store';
-import StoreCreate from './pages/StoreCreate';
+import SpiritStoreCreate from './pages/SpiritStoreCreate';
+import SpencerStoreCreate from './pages/SpencerStoreCreate';
 
 
 
@@ -19,7 +19,8 @@ function App() {
          <Route path='/' element={<Home/>} />
          <Route path='/stores' element={<StorePage/>} />
          <Route path='/stores/:store_number' element={<Store/>} />
-         <Route path='/stores/create' element={<StoreCreate/>} />
+         <Route path='/stores/spirit/create' element={<SpiritStoreCreate/>} />
+         <Route path='/stores/spencer/create' element={<SpencerStoreCreate/>} />
          <Route path='/rm' element={<Contact/>} />
          <Route path='/faq' element={<FAQ/>} />
        </Routes>

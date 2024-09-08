@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export type storeSearchOptionsType = 'store_number' | 'address' | 'city' | 'state' | 'zip';
 export const storeSearchOptions : storeSearchOptionsType[] = ['store_number', 'address', 'city', 'state', 'zip']
-export const storeYearOptions : string[] = range(2020, new Date().getFullYear()).map((v,k) => v.toString()).reverse()
+export const storeYearOptions : string[] = range(2020, (new Date().getFullYear()) + 1).map((v,k) => v.toString()).reverse()
 
 const StoreSearchBar = () => {
 
