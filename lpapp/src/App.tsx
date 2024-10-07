@@ -4,7 +4,7 @@ import { MainNavbar } from './components';
 import { Route, Routes } from 'react-router-dom';
 import {StorePage} from './pages';
 import FAQ from './pages/FAQ';
-import { Store } from './pages/components/Store';
+import { Store } from './pages/store/Store';
 import SpiritStoreCreate from './pages/SpiritStoreCreate';
 import SpencerStoreCreate from './pages/SpencerStoreCreate';
 

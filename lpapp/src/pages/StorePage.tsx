@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 
-import { store } from './components/Store';
+import { store } from '../api';
 import { YearSelector } from './components/StoreSearchBar';
 import { 
     MaterialReactTable, 
@@ -88,7 +88,7 @@ const StorePage = () => {
     const [test, setTest] = useState("");
 
     const getD = () => {
-        const d = fetch('http://localhost:8080/api/stores', {method: 'GET'})
+        fetch('/api/stores', {method: 'GET'})
         .then((response: Response) => response.json()) // Parse the JSON response
         .then((data : store[]) => {
             console.log("Stores list:", data); // Log the JSON data
@@ -97,10 +97,8 @@ const StorePage = () => {
         .catch((error) => {
             console.error('Error fetching the stores:', error);
         });
-        console.log('test', d)
-
-        return d
     }
+
     useEffect(() => {
         getD()
     }, [])
@@ -113,7 +111,11 @@ const StorePage = () => {
         enablePagination: false,
         muiTableBodyCellProps: ({ cell, column, row, table }) => ({
             onDoubleClick: (event) => {
-                navigate(`/stores/${row.original.store_number}`, {state:row.original})
+                navigate(`/stores/${row.original.store_number}`, 
+                    {state:row.original}
+
+                )
+                console.log("row:", row.original)
             },
         }),
         renderTopToolbarCustomActions: ({ table }) => (

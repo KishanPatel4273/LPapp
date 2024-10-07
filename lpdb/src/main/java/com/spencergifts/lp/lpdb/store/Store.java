@@ -82,7 +82,7 @@ public class Store {
         this.store_type = store_type;
     }
 
-    public int adgetStore_number() {
+    public int getStore_number() {
         return this.store_number;
     }
 
@@ -112,14 +112,6 @@ public class Store {
 
     public void setStoreType(StoreType store_type) {
         this.store_type = store_type;
-    }
-
-    public int getStoreNumber() {
-        return this.store_number;
-    }
-
-    public void setStoreNumber(int store_number) {
-        this.store_number = store_number;
     }
 
     public String getCity() {
@@ -161,4 +153,12 @@ public class Store {
     public void setPreviousStoreId(long previous_store_id) {
         this.previous_store_id = previous_store_id;
     }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "Store[store_id=%d, store_type='%s', store_number=%d, address='%s', city='%s', state='%s', zip='%s', year=%s, previous_store_id=%d]",
+                    store_id, store_type, store_number, address, city, state, zip, year, previous_store_id
+    );
+}
 }

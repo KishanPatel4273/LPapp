@@ -9,5 +9,4 @@ public class LpdbApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LpdbApplication.class, args);
 	}
-
 }

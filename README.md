@@ -65,7 +65,7 @@ Create a web application that helps manage stores panel codes, camera data, R&M 
     - **Handling Responses:** Process and handle responses from the backend, including success and error cases.
     - **Error Handling:** Implement error handling to manage HTTP errors and display appropriate messages to users.
     - **Request Interceptors:** Optionally set up request interceptors to add authentication tokens or other headers.
-
+  - **local storage** redux  
 - **Database:**
   - **Schema:** Design tables for users, transactions, categories, and budgets.
   - **Relationships:** Define relationships between users and their transactions or budgets.

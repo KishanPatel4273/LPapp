@@ -48,7 +48,7 @@ public class StoreService {
     @Transactional
     void update(Store store, long store_id){
         int updated = this.storeRepository.update(store.getStoreType(), 
-                                    store.getStoreNumber(), 
+                                    store.getStore_id(), 
                                     store.getAddress(), 
                                     store.getCity(), 
                                     store.getState(), 
@@ -57,7 +57,7 @@ public class StoreService {
                                     store.getPrevious_store_id(), 
                                     store_id);
                         
-        Assert.state(updated == 1, "Failed to create store " + store.getStoreNumber());
+        Assert.state(updated == 1, "Failed to create store " + store.getStore_id());
     }
 
     void delete(Store store){

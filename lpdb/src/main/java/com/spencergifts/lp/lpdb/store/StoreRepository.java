@@ -20,7 +20,7 @@ public interface StoreRepository extends ListCrudRepository<Store, Long> {
     @Query("UPDATE Store s SET s.store_type = :store_type, s.store_number = :store_number, s.address = :address, s.city = :city, s.state = :state, s.zip = :zip, s.year = :year, s.previous_store_id = :previous_store_id WHERE s.store_id = :store_id")
     int update(
         @Param("store_type") StoreType store_type,
-        @Param("store_number") int store_number,
+        @Param("store_number") long l,
         @Param("address") String address,
         @Param("city") String city,
         @Param("state") String state,

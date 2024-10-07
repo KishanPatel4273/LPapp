@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import Spreadsheet, { Matrix } from "react-spreadsheet"
 import { YearSelector } from "./components/StoreSearchBar"
-import { store, zm, dsm } from "./components/Store"
+import { store, zm, dsm } from "../api"
 
 const dataLabels = ["store_number", "zone_number","zone_manager","zone_manager_phone_number","district_number","district_store_manager","district_store_manager_phone_number","kit_number","3PL","store_number","store_name","center_or_mall_name","address","city","state","zip","latitude","longitude","store_phone_number","total_square_foot","built_to","sup_type","poss_date","fix_arrival_date","const_start_date","stock_start_date","open_date","create_date","allows_early_drop","live_load","live_load_reason","extended_stay","stay_length"]
 const columnLabels = ["Store","Zone","Zone Mgr","Zone Mgr Phone #","Dist","DSM","DSM phone #","Kit #","3PL","Store","Store Name","Center/Mall Name","Center Address","Center City","ST","Zip","Latitude","Longitude","Store Phone?","Total Sq. Ft","Build To?","Sup Type?","Poss. Date","Fix Arrival?","Const Start?","Stock Start?","Open Date?","Create Date","Allows Early Drop","Live Load?","Live Load Reason?","Extended Stay","Stay Length"]
