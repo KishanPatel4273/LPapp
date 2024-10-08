@@ -3,7 +3,7 @@ export type storeType = "SPIRIT" | "SPENCER";
 
 export type store = {
     //  Primary Key
-    store_id?: number,
+    store_Id?: number,
     store_type: storeType,
     address: string,
     city: string,

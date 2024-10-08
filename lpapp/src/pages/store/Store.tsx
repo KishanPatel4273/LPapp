@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { store } from '../../api';
 import AddressCard from '../components/AddressCard';
+import AlarmCodeCard from '../components/AlarmCodesCard';
+import { fakeAlarmCodeData } from '../../api/AlarmAPI';
 
 
 type props = {
@@ -11,7 +13,7 @@ type props = {
 const StoreRow = (props : props) => {
     return (
         <tr>
-            <td style={cellStyle}>{props.store.store_id}</td>
+            <td style={cellStyle}>{props.store.store_Id}</td>
             <td style={cellStyle}>{props.store.store_type}</td>
             <td style={cellStyle}>{props.store.address}</td>
             <td style={cellStyle}>{props.store.city}</td>
@@ -43,13 +45,30 @@ const Store = () => {
 
     return (
         <div>
-       
-            {storeData != null ? <AddressCard 
-                    address={storeData.address}
-                    state={storeData.state}
-                    zip={storeData.zip}
-                    />      
-                    : <></> }
+            <div style={{
+                flex: 1, 
+                fontSize:34,
+                fontWeight: 'bold', 
+                flexDirection:'row',
+                justifyContent: 'center', // Centers content horizontally
+                alignItems: 'center', // Centers content vertically
+                textAlign: 'center',
+            }}>
+                {storeData ? storeData.store_number : ''}
+            </div>
+            <div style={{display:'flex', flexDirection:'row'}}>
+
+
+                {storeData != null ? <AddressCard 
+                    address={storeData.address} state={storeData.state} zip={storeData.zip}/> : <></>
+                }
+
+                <AlarmCodeCard 
+                    alarmCodes={fakeAlarmCodeData} 
+                    onCreate={() => {}}
+                    onUpdate={(id) => {}}
+                />
+            </div>
         </div>
     )
 }

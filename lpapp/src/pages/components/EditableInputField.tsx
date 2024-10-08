@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
 
-type Props = {
+type props = {
   text: string;
-  onUpdate: (newText: string) => Promise<void>;
+  onUpdate: (newText: string) => void;
 };
 
-const EditableInputField = ({ text, onUpdate }: Props) => {
+
+const EditableInputField = ({ text, onUpdate }: props) => {
   const [isEditing, setIsEditing] = useState(false); // Track edit mode
   const [currentText, setCurrentText] = useState(text); // Track input value
 
@@ -23,20 +25,24 @@ const EditableInputField = ({ text, onUpdate }: Props) => {
   };
 
   return (
-    <div>
+    <div style={{ display: 'flex' }}>
       {isEditing ? (
-        <input
+        <TextField
+          style={{ display: 'flex', maxWidth: 75 }}
+          defaultValue={text}
+          margin="none"
+          size="small"
           type="text"
           value={currentText}
           onChange={(e) => setCurrentText(e.target.value)} // Update local state on input change
           onBlur={handleBlur} // Call API when input loses focus
           autoFocus
         />
-      ) : (
-        <label onDoubleClick={handleDoubleClick}>{currentText}</label> // Show text label and switch to edit mode on double click
+          ) : (
+          <label onDoubleClick={handleDoubleClick}>{currentText}</label> // Show text label and switch to edit mode on double click
       )}
-    </div>
-  );
+        </div>
+      );
 };
 
-export default EditableInputField;
+      export default EditableInputField;
