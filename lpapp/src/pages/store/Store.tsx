@@ -4,6 +4,7 @@ import { store } from '../../api';
 import AddressCard from '../components/AddressCard';
 import AlarmCodeCard from '../components/AlarmCodesCard';
 import { fakeAlarmCodeData } from '../../api/AlarmAPI';
+import { getStore, getStores } from '../../api/StoreAPI';
 
 
 type props = {
@@ -13,15 +14,15 @@ type props = {
 const StoreRow = (props : props) => {
     return (
         <tr>
-            <td style={cellStyle}>{props.store.store_Id}</td>
-            <td style={cellStyle}>{props.store.store_type}</td>
+            <td style={cellStyle}>{props.store.storeId}</td>
+            <td style={cellStyle}>{props.store.storeType}</td>
             <td style={cellStyle}>{props.store.address}</td>
             <td style={cellStyle}>{props.store.city}</td>
             <td style={cellStyle}>{props.store.state}</td>
             <td style={cellStyle}>{props.store.zip}</td>
             <td style={cellStyle}>{props.store.year}</td>
-            <td style={cellStyle}>{props.store.store_number}</td>
-            <td style={cellStyle}>{props.store.previous_store_id}</td>
+            <td style={cellStyle}>{props.store.storeNumber}</td>
+            <td style={cellStyle}>{props.store.previousStoreId}</td>
         </tr>
   );
 }
@@ -37,11 +38,22 @@ const Store = () => {
     const [storeData, setStoreData] = useState<store | null>(); 
 
     useEffect(() => {
+
         if (location.state != null) {
             setStoreData(location.state)
         }
+        console.log("store d", location.state.store_id, storeData)
+        //@TODO store_id is null
+        const loadStore = async () => {
+            const store  = await getStore(location.state.store_id);
+    
+            if (store) {
+                console.log("store got data from api")
+                setStoreData(store)
+            }
+        }
 
-    }, [])
+    }, [location.state])
 
     return (
         <div>
@@ -54,7 +66,7 @@ const Store = () => {
                 alignItems: 'center', // Centers content vertically
                 textAlign: 'center',
             }}>
-                {storeData ? storeData.store_number : ''}
+                {storeData ? storeData.storeNumber + " " + storeData.storeId : ''}
             </div>
             <div style={{display:'flex', flexDirection:'row'}}>
 
@@ -67,6 +79,7 @@ const Store = () => {
                     alarmCodes={fakeAlarmCodeData} 
                     onCreate={() => {}}
                     onUpdate={(id) => {}}
+                    store={storeData}
                 />
             </div>
         </div>

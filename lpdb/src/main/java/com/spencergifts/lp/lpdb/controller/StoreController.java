@@ -1,7 +1,10 @@
-package com.spencergifts.lp.lpdb.store;
+package com.spencergifts.lp.lpdb.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.spencergifts.lp.lpdb.model.Store;
+import com.spencergifts.lp.lpdb.service.StoreService;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +47,7 @@ public class StoreController {
     @PostMapping
     ResponseEntity<List<Store>> createAll(@RequestBody List<Store> stores) {
         try {
+            System.err.println(stores);
             this.storeService.create(stores);
             return ResponseEntity.ok().body(null);
         } catch (Exception e) {
@@ -51,18 +55,18 @@ public class StoreController {
         }
     }
 
-    @PutMapping("/{store_id}")
-    ResponseEntity<Store>  putMethodName(@RequestBody Store store, @PathVariable long id) {
-        Optional<Store> _store = storeService.findById(id);
+    // @PutMapping("/{store_id}")
+    // ResponseEntity<Store>  putMethodName(@RequestBody Store store, @PathVariable long id) {
+    //     Optional<Store> _store = storeService.findById(id);
         
-        if (_store.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    //     if (_store.isEmpty()) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    //     }
 
-        // TODO: make sure store is valid
-        this.storeService.update(store, id);
-        return ResponseEntity.ok().body(null);
-    }
+    //     // TODO: make sure store is valid
+    //     this.storeService.update(store, id);
+    //     return ResponseEntity.ok().body(null);
+    // }
 
     @DeleteMapping
     ResponseEntity<Store> delete(@PathVariable long id) {

@@ -13,17 +13,18 @@ import {
 import { MRT_ColumnDef } from 'material-react-table'; // Adjust import based on your library
 import { useNavigate } from 'react-router-dom';
 import AddStoreButton from './components/AddStoreButton';
+import { getStores } from '../api/StoreAPI';
 
 const stores_: store[] = Array.from({ length: 100 }, (_, index) => ({
-    store_id: index + 1,
-    store_type: index % 2 === 0 ? "SPIRIT" : "SPENCER",
+    storeId: index + 1,
+    storeType: index % 2 === 0 ? "SPIRIT" : "SPENCER",
     address: `${1000 + index} South White Rd.1234567890123456789`,
     city: index % 3 === 0 ? "San Jose" : index % 3 === 1 ? "Santa Clara" : "Sunnyvale",
     state: index % 3 === 0 ? "CA" : index % 3 === 1 ? "NJ" : "MT",
     zip: `95${100 + index}`,
     year: `${2024 - (index % 5)}`,
-    previous_store_id: index === 0 ? 0 : index,
-    store_number: `${61000 + index}`,
+    previousStoreId: index === 0 ? 0 : index,
+    storeNumber: `${61000 + index}`,
     latitude: 1,
     longitude: 1, 
     total_square_foot: 1,
@@ -44,11 +45,11 @@ const StorePage = () => {
     const columns = useMemo<MRT_ColumnDef<any, any>[]>(
         () => [
             {
-                accessorKey: 'store_id',
+                accessorKey: 'storeId',
                 header: 'Store ID',
             },
             {
-                accessorKey: 'store_number',
+                accessorKey: 'storeNumber',
                 header: 'Store Number',
             },
             {
@@ -68,7 +69,7 @@ const StorePage = () => {
                 header: 'Zip',
             },
             {
-                accessorKey: 'store_type',
+                accessorKey: 'storeType',
                 header: 'Store Type',
             },
             {
@@ -76,7 +77,7 @@ const StorePage = () => {
                 header: 'Year',
             },
             {
-                accessorKey: 'previous_store_id',
+                accessorKey: 'previousStoreId',
                 header: 'Previous Store ID',
             },
         ],
@@ -87,20 +88,15 @@ const StorePage = () => {
     const data = stores_
     const [test, setTest] = useState("");
 
-    const getD = () => {
-        fetch('/api/stores', {method: 'GET'})
-        .then((response: Response) => response.json()) // Parse the JSON response
-        .then((data : store[]) => {
-            console.log("Stores list:", data); // Log the JSON data
-            setStoreData(data); 
-        })
-        .catch((error) => {
-            console.error('Error fetching the stores:', error);
-        });
-    }
-
     useEffect(() => {
-        getD()
+        const loadStores = async () => {
+            const data = await getStores()
+            if (data) {
+                setStoreData(data)
+            }
+        }
+
+        loadStores()
     }, [])
 
     const table = useMaterialReactTable({
@@ -111,7 +107,7 @@ const StorePage = () => {
         enablePagination: false,
         muiTableBodyCellProps: ({ cell, column, row, table }) => ({
             onDoubleClick: (event) => {
-                navigate(`/stores/${row.original.store_number}`, 
+                navigate(`/stores/${row.original.storeNumber}`, 
                     {state:row.original}
 
                 )

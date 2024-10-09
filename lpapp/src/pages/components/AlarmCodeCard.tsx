@@ -14,6 +14,7 @@ type prams = {
     onDelete : (alarmCode:alarmCode) => void
     onUpdate : (alarmCode:alarmCode) => void
     style?: {}
+    isEditingMode: boolean
 }
 
 /**
@@ -21,8 +22,8 @@ type prams = {
  * @param param
  * @returns 
  */
-const AlarmCodeCard = ({ alarmCode, onDelete, onUpdate, style }: prams) => {
-    const [isEditing, setIsEditing] = useState<boolean>(false);
+const AlarmCodeCard = ({ alarmCode, onDelete, onUpdate, style, isEditingMode=false}: prams) => {
+    const [isEditing, setIsEditing] = useState<boolean>(isEditingMode);
     const [data, setData] = useState(alarmCode)
     const [updatedData, setUpdatedData] = useState(alarmCode)
 

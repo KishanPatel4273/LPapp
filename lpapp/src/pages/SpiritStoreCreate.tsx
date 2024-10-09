@@ -3,10 +3,10 @@ import Spreadsheet, { Matrix } from "react-spreadsheet"
 import { YearSelector } from "./components/StoreSearchBar"
 import { store, zm, dsm } from "../api"
 
-const dataLabels = ["store_number", "zone_number","zone_manager","zone_manager_phone_number","district_number","district_store_manager","district_store_manager_phone_number","kit_number","3PL","store_number","store_name","center_or_mall_name","address","city","state","zip","latitude","longitude","store_phone_number","total_square_foot","built_to","sup_type","poss_date","fix_arrival_date","const_start_date","stock_start_date","open_date","create_date","allows_early_drop","live_load","live_load_reason","extended_stay","stay_length"]
+const dataLabels = ["storeNumber", "zone_number","zone_manager","zone_manager_phone_number","district_number","district_store_manager","district_store_manager_phone_number","kit_number","3PL","storeNumber","store_name","center_or_mall_name","address","city","state","zip","latitude","longitude","store_phone_number","total_square_foot","built_to","sup_type","poss_date","fix_arrival_date","const_start_date","stock_start_date","open_date","create_date","allows_early_drop","live_load","live_load_reason","extended_stay","stay_length"]
 const columnLabels = ["Store","Zone","Zone Mgr","Zone Mgr Phone #","Dist","DSM","DSM phone #","Kit #","3PL","Store","Store Name","Center/Mall Name","Center Address","Center City","ST","Zip","Latitude","Longitude","Store Phone?","Total Sq. Ft","Build To?","Sup Type?","Poss. Date","Fix Arrival?","Const Start?","Stock Start?","Open Date?","Create Date","Allows Early Drop","Live Load?","Live Load Reason?","Extended Stay","Stay Length"]
 type dataRowType = {
-    store_number: string
+    storeNumber: string
     zone_number: string
     zone_manager: string
     zone_manager_phone_number: string
@@ -103,37 +103,37 @@ const request = (data: dataRowType[], year:string) => {
     var validData:[store, dsm, zm][] = []
 
     data.forEach((v:dataRowType,k:number) => {
-        if (!v.store_number ||
+        if (!v.storeNumber ||
             !v.address ||
             !v.city ||
             !v.state ||
-            !v.zip ||
-            !v.latitude ||
-            !v.longitude ||
-            !v.total_square_foot ||
-            !v.poss_date ||
-            !v.create_date ||
-            !v.zone_number ||
-            !v.zone_manager ||
-            !v.zone_manager_phone_number ||
-            !v.district_number ||
-            !v.district_store_manager ||
-            !v.district_store_manager_phone_number
+            !v.zip
+            // !v.latitude ||
+            // !v.longitude ||
+            // !v.total_square_foot ||
+            // !v.poss_date ||
+            // !v.create_date ||
+            // !v.zone_number ||
+            // !v.zone_manager ||
+            // !v.zone_manager_phone_number ||
+            // !v.district_number ||
+            // !v.district_store_manager ||
+            // !v.district_store_manager_phone_number
         ) {
             if (dataValid) {
-                alert(`Error trying to parse store ${v?.store_number} (row ${k+1})`)
+                alert(`Error trying to parse store ${v?.storeNumber} (row ${k+1})`)
                 dataValid = false
             }
         } else if(dataValid) {
             const store_metadata: store = {
-                store_type: "SPIRIT",
+                storeType: "SPIRIT",
                 address: v.address,
                 city: v.city,
                 state: v.state,
                 zip: v.zip,
                 year: year,
-                store_number: v.store_number,
-                previous_store_id: null,
+                storeNumber: v.storeNumber,
+                previousStoreId: null,
 
                 latitude: Number(v.latitude),
                 longitude: Number(v.longitude),
@@ -174,21 +174,23 @@ const request = (data: dataRowType[], year:string) => {
             
             // make store
             // get id
-            const store_create_response = await fetch('http://localhost:8080/api/stores', {
+            console.log("drt:", s)
+
+            const store_create_response = await fetch('/api/stores', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
                 },
                 body: JSON.stringify([{
-                store_type: "SPIRIT",
+                storeType: "SPIRIT",
                 address: s.address,
 
                 city: s.city,
                 state: s.state,
                 zip: s.zip,
                 year: year,
-                store_number: s.store_number,
-                previous_store_id: null}]),
+                storeNumber: s.storeNumber,
+                previousStoreId: null}]),
               });
         //     // pair zm | DSM to store
         //         // store_id <> dsm_id | zm_id

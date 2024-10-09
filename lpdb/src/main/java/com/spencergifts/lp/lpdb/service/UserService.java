@@ -1,9 +1,14 @@
-package com.spencergifts.lp.lpdb.user;
+package com.spencergifts.lp.lpdb.service;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+
+import com.spencergifts.lp.lpdb.exceptions.DuplicateEmailException;
+import com.spencergifts.lp.lpdb.exceptions.NullValueException;
+import com.spencergifts.lp.lpdb.model.User;
+import com.spencergifts.lp.lpdb.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -16,15 +21,15 @@ public class UserService
         this.userRepository = userRepository;
     }
 
-    List<User> findAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    Optional<User> findById(long user_id) {
+    public Optional<User> findById(long user_id) {
         return userRepository.findById(user_id);
     }
 
-    User save(User user) throws NullValueException, DuplicateEmailException {
+    public User save(User user) throws NullValueException, DuplicateEmailException {
         if (user.getFirstName() == null || user.getLastName() == null) {
             throw new NullValueException();
         }
@@ -35,11 +40,12 @@ public class UserService
     }
 
     @Transactional
+    public
     void update(User user, long id) {
         userRepository.updateById(user.getAdmin(), user.getActive(), id);
     }
 
-    void delete(User user) {
+    public void delete(User user) {
         // TODO: catch
         this.userRepository.delete(user);
     }

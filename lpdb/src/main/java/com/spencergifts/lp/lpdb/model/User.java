@@ -1,4 +1,4 @@
-package com.spencergifts.lp.lpdb.user;
+package com.spencergifts.lp.lpdb.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

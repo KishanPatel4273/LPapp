@@ -1,17 +1,19 @@
 
-package com.spencergifts.lp.lpdb.user;
+package com.spencergifts.lp.lpdb.repository;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import com.spencergifts.lp.lpdb.model.User;
+
 import jakarta.transaction.Transactional;
 
 /*
  * outline methods on the user table
  */
-interface UserRepository extends ListCrudRepository<User, Long> {
+public interface UserRepository extends ListCrudRepository<User, Long> {
 
     @Modifying
     @Transactional

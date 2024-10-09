@@ -11,7 +11,7 @@ type props = {
 const AddressCard = ({ address, state, zip, style }: props) => {
 
     return (
-        <div style={{...styles.card, ...style,}}>
+        <div style={{...styles.card, ...style, display:'inline-flex', flexDirection:'column'}}>
             <div style={{fontWeight:'bold', textAlign:'center', marginBottom:'1px'}}>
                 Address
             </div>
@@ -39,7 +39,7 @@ const styles = {
         padding:'1rem',
         margin: '1rem',
         maxWidth: '200px',
-        maxHeight: '200px',
+        // maxHeight: '200px',
         fontFamily: 'Arial, sans-serif',
         backgroundColor: '#fdfdfd',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { CopyButton } from '../../components';
-import { alarmCode } from '../../api';
+import { alarmCode, store } from '../../api';
 import AlarmCodeCard from './AlarmCodeCard';
 import AddIcon from '@mui/icons-material/Add';
 import EditableInputField from './EditableInputField';
 import Divider from '@mui/material/Divider';
+import { createAlarmCode } from '../../api/AlarmAPI';
 
 
 type props = {
@@ -12,9 +13,10 @@ type props = {
     alarmCodes: alarmCode[]
     onCreate: () => void
     onUpdate: (alarm_Id: number) => void
+    store: store
 };
 
-const AlarmCodesCard = ({ alarmCodes, onCreate, onUpdate, style }: props) => {
+const AlarmCodesCard = ({ alarmCodes, store, onCreate, onUpdate, style }: props) => {
 
     const [isCreating, setIsCreating] = useState<boolean>(false)
 
@@ -28,36 +30,55 @@ const AlarmCodesCard = ({ alarmCodes, onCreate, onUpdate, style }: props) => {
     }
 
     const createCode = () => {
-        
+
     }
 
 
     return (
-        <div style={{ ...styles.card, ...style, display:'flex', flexDirection:'column'}}>
-            
-            <Divider orientation="vertical" flexItem />               
-            
+        <div style={{ ...styles.card, ...style, display: 'flex', flexDirection: 'column' }}>
+
+            <Divider orientation="vertical" flexItem />
+
             {alarmCodes.map((value: alarmCode, index, arr) => {
-                return <AlarmCodeCard 
-                            alarmCode={value}
-                            onDelete={(alarmCodes) => {
-                                // remove from list and call api to delete
-                            }}
-                            onUpdate={(alarmCodes) => {
-                                // update list and call api put
-                            }}
-                         />
+                return <AlarmCodeCard
+                    alarmCode={value}
+                    onDelete={(alarmCodes) => {
+                        // remove from list and call api to delete
+                    } }
+                    onUpdate={(alarmCodes) => {
+                        // update list and call api put
+                    } } 
+                    isEditingMode={false}                
+                />
             })}
 
             {!isCreating && <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <div style={{ borderRadius: '5px', marginTop:5, marginRight: 5 }}>
-                    <button style={styles.button} onClick={() => {setIsCreating(true)}}>
-                        <AddIcon style={{fontSize:22}}/>
+                <div style={{ borderRadius: '5px', marginTop: 5, marginRight: 5 }}>
+                    <button style={styles.button} onClick={() => { setIsCreating(true) }}>
+                        <AddIcon style={{ fontSize: 22 }} />
                     </button>
                 </div>
             </div>}
-            
-            <EditableInputField text={'test'} onUpdate={(newText: string) => {}} />
+            {isCreating && <AlarmCodeCard alarmCode={{
+                firstName: '',
+                lastName: '',
+                code: '',
+                phoneNumber: '',
+                position: 'ASM',
+                active: true,
+                dateCreated: '',
+                storeId: store.storeId
+            }} onDelete={function (alarmCode: alarmCode): void {
+                setIsCreating(false);
+            }} onUpdate={function (alarmCode: alarmCode): void {
+                if (!createAlarmCode(alarmCode, store.storeId)) {
+                    alert("failed to create new alarm code");
+                }
+                setIsCreating(false);
+            }} isEditingMode={true} 
+            />}
+
+            <EditableInputField text={'test'} onUpdate={(newText: string) => { }} />
 
 
         </div>

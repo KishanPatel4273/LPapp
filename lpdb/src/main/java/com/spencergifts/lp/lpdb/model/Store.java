@@ -1,4 +1,4 @@
-package com.spencergifts.lp.lpdb.store;
+package com.spencergifts.lp.lpdb.model;
 
 import java.time.Year;
 
@@ -16,13 +16,13 @@ public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "store_id", unique = true, nullable = false)
-    private long store_id;
+    private long storeId;
 
     @Column(name = "store_type", nullable = false)
-    private StoreType store_type;
+    private StoreType storeType;
 
     @Column(name = "store_number", nullable = false)
-    private int store_number;
+    private int storeNumber;
 
     @Column(name = "address", nullable = false, length = 128)
     private String address;
@@ -40,54 +40,45 @@ public class Store {
     private Year year;
 
     @Column(name = "previous_store_id", nullable = true)
-    private long previous_store_id;
+    private long previousStoreId;
 
-    public Store() {
+    public Store() {}
 
-    }
 
-    public Store(long store_id, StoreType store_type, int store_number, String address, String city, String state, String zip, Year year, long previous_store_id) {
-        this.store_id = store_id;
-        this.store_type = store_type;
-        this.store_number = store_number;
+    public Store(long storeId, StoreType storeType, int storeNumber, String address, String city, String state, String zip, Year year, long previousStoreId) {
+        this.storeId = storeId;
+        this.storeType = storeType;
+        this.storeNumber = storeNumber;
         this.address = address;
         this.city = city;
         this.state = state;
         this.zip = zip;
         this.year = year;
-        this.previous_store_id = previous_store_id;
+        this.previousStoreId = previousStoreId;
     }
 
     public long getStoreId() {
-        return this.store_id;
+        return this.storeId;
     }
 
-    public void setStoreId(long store_id) {
-        this.store_id = store_id;
+    public void setStoreId(long storeId) {
+        this.storeId = storeId;
     }
 
-    public long getStore_id() {
-        return this.store_id;
+    public StoreType getStoreType() {
+        return this.storeType;
     }
 
-    public void setStore_id(long store_id) {
-        this.store_id = store_id;
+    public void setStoreType(StoreType storeType) {
+        this.storeType = storeType;
     }
 
-    public StoreType getStore_type() {
-        return this.store_type;
+    public int getStoreNumber() {
+        return this.storeNumber;
     }
 
-    public void setStore_type(StoreType store_type) {
-        this.store_type = store_type;
-    }
-
-    public int getStore_number() {
-        return this.store_number;
-    }
-
-    public void setStore_number(int store_number) {
-        this.store_number = store_number;
+    public void setStoreNumber(int storeNumber) {
+        this.storeNumber = storeNumber;
     }
 
     public String getAddress() {
@@ -96,22 +87,6 @@ public class Store {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public long getPrevious_store_id() {
-        return this.previous_store_id;
-    }
-
-    public void setPrevious_store_id(long previous_store_id) {
-        this.previous_store_id = previous_store_id;
-    }
-
-    public StoreType getStoreType() {
-        return this.store_type;
-    }
-
-    public void setStoreType(StoreType store_type) {
-        this.store_type = store_type;
     }
 
     public String getCity() {
@@ -147,18 +122,26 @@ public class Store {
     }
 
     public long getPreviousStoreId() {
-        return this.previous_store_id;
+        return this.previousStoreId;
     }
 
-    public void setPreviousStoreId(long previous_store_id) {
-        this.previous_store_id = previous_store_id;
+    public void setPreviousStoreId(long previousStoreId) {
+        this.previousStoreId = previousStoreId;
     }
 
     @Override
     public String toString() {
-        return String.format(
-            "Store[store_id=%d, store_type='%s', store_number=%d, address='%s', city='%s', state='%s', zip='%s', year=%s, previous_store_id=%d]",
-                    store_id, store_type, store_number, address, city, state, zip, year, previous_store_id
-    );
-}
+        return "{" +
+            " storeId='" + getStoreId() + "'" +
+            ", storeType='" + getStoreType() + "'" +
+            ", storeNumber='" + getStoreNumber() + "'" +
+            ", address='" + getAddress() + "'" +
+            ", city='" + getCity() + "'" +
+            ", state='" + getState() + "'" +
+            ", zip='" + getZip() + "'" +
+            ", year='" + getYear() + "'" +
+            ", previousStoreId='" + getPreviousStoreId() + "'" +
+            "}";
+    }
+
 }
