@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 export type position = 'DSM' | 'SM' | 'ASM' | 'ZM'
 
 export type alarmCode = {
-    alarmId?: number,
+    alarmCodeId?: number,
     firstName: string,
     lastName: string,
     //pad till size = 4
@@ -72,20 +72,19 @@ export const getAlarmCodes = async (store_number: number, year: number): Promise
 }
 
 // Function to create one or more alarm codes
-export const createAlarmCode = async (alarmCodes: alarmCode, storeId: number): Promise<boolean> => {
+export const createAlarmCode = async (alarmCodes: alarmCode, storeId: number): Promise<alarmCode | false> => {
     try {
 
-
+        console.log("making alarm code");
         const data = JSON.stringify({
             firstName: alarmCodes.firstName,
             lastName: alarmCodes.lastName,
             code: alarmCodes.code,
             active: true,
             phoneNumber: clearFormattingPhoneNumber(alarmCodes.phoneNumber),
-            dateCreated: '2023-05-15T10:30:00',
             store: { storeId: storeId }
         })
-        console.log(data)
+
         const response = await axios.post('/api/alarms',
             data,
             {
@@ -97,7 +96,7 @@ export const createAlarmCode = async (alarmCodes: alarmCode, storeId: number): P
 
         if (response.status === 201) {
             console.log('Alarm code(s) created successfully:', response.data);
-            return true
+            return response.data
         } else {
             console.log(`Unexpected response status: ${response.status}`);
             return false
@@ -108,39 +107,54 @@ export const createAlarmCode = async (alarmCodes: alarmCode, storeId: number): P
     }
 };
 
+export const updateAlarmCode = async (alarmCodes: alarmCode, alarmId: number): Promise<alarmCode | false> => {
+    try {
 
-export const fakeAlarmCodeData: alarmCode[] = [
-    {
-        alarmId: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        code: '1234',
-        phoneNumber: '555-123-4567',
-        position: 'DSM',
-        active: true,
-        dateCreated: '2023-05-15T10:30:00',
-        storeId: 0
-    },
-    {
-        alarmId: 2,
-        firstName: 'Jane',
-        lastName: 'Smisasefdrghjkl;th',
-        code: '5678',
-        phoneNumber: '555-987-6543',
-        position: 'SM',
-        active: false,
-        dateCreated: '2023-07-22T12:45:00',
-        storeId: 0
-    },
-    {
-        alarmId: 3,
-        firstName: 'Bob',
-        lastName: 'Johnson',
-        code: '4321',
-        phoneNumber: '555-654-3210',
-        position: 'ASM',
-        active: true,
-        dateCreated: '2023-03-12T09:15:00',
-        storeId: 0
-    },
-];
+
+        const data = JSON.stringify({
+            firstName: alarmCodes.firstName,
+            lastName: alarmCodes.lastName,
+            code: alarmCodes.code,
+            active: true,
+            phoneNumber: clearFormattingPhoneNumber(alarmCodes.phoneNumber),
+            // store: { storeId: storeId }
+        })
+
+        const response = await axios.put(`/api/alarms/${alarmId}`,
+            data,
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        if (response.status === 201) {
+            console.log('Alarm code(s) updated successfully:', response.data);
+            return response.data
+        } else {
+            console.log(`Unexpected response status: ${response.status}`);
+            return false
+        }
+    } catch (error) {
+        console.error('Unexpected error:', error);
+        return false
+    }
+};
+
+export const deleteAlarmCode = async (id) => {
+    try {
+        const response = await axios.delete(`/api/alarms/${id}`);
+
+        if (response.status === 200) {
+            return response.data
+        }
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            console.error("Alarm code not found.");
+        } else {
+            console.error("An error occurred while deleting the alarm code:", error.message);
+        }
+    }
+    return false
+};

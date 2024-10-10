@@ -3,15 +3,14 @@ import { CopyButton } from '../../components';
 import { alarmCode, store } from '../../api';
 import AlarmCodeCard from './AlarmCodeCard';
 import AddIcon from '@mui/icons-material/Add';
-import EditableInputField from './EditableInputField';
 import Divider from '@mui/material/Divider';
-import { createAlarmCode } from '../../api/AlarmAPI';
+import { createAlarmCode, deleteAlarmCode, updateAlarmCode } from '../../api/AlarmAPI';
 
 
 type props = {
     style?: {}
     alarmCodes: alarmCode[]
-    onCreate: () => void
+    onCreate: (alarmCode: alarmCode) => void
     onUpdate: (alarm_Id: number) => void
     store: store
 };
@@ -19,35 +18,57 @@ type props = {
 const AlarmCodesCard = ({ alarmCodes, store, onCreate, onUpdate, style }: props) => {
 
     const [isCreating, setIsCreating] = useState<boolean>(false)
+    const [alarmCodeList, setAlarmCodeList] = useState(alarmCodes)
 
+    const onDeleteCode = (alarmCode : alarmCode) => {
+        console.log("delete", alarmCode)
+        if (alarmCode?.alarmCodeId) {
+            deleteAlarmCode(alarmCode?.alarmCodeId)
+            setAlarmCodeList(alarmCodeList.filter(item => item.alarmCodeId !== alarmCode.alarmCodeId));
 
-    const deleteCode = () => {
+        } else {
+            console.log("deleting alarm code went wrong...")
+        }
 
     }
 
-    const updateCode = () => {
-
+    const updateCode = async (alarmCode : alarmCode) => {
+        const response = await updateAlarmCode(alarmCode, alarmCode.alarmCodeId)
+        if (response != false) {
+            // response 
+        } else {
+            console.log("updating alarm code went wrong...")
+        }
     }
 
-    const createCode = () => {
+    const createCode = async (alarmCode : alarmCode) => {
+        setIsCreating(false)
+        const response = await createAlarmCode(alarmCode, store.storeId)
+        if (response !== false) {
+            setAlarmCodeList([...alarmCodeList, response])
+            console.log("Test Response:", response)
+        }
 
+        onCreate(alarmCode)
     }
+
+    useEffect(() => {
+        setAlarmCodeList(alarmCodes)
+    }, [alarmCodes])
 
 
     return (
         <div style={{ ...styles.card, ...style, display: 'flex', flexDirection: 'column' }}>
 
-            <Divider orientation="vertical" flexItem />
+            <div style={{fontWeight:'bold', textAlign:'center', marginBottom:'1px', alignContent:'center'}}>
+                Alarm Codes
+            </div>  
 
-            {alarmCodes.map((value: alarmCode, index, arr) => {
-                return <AlarmCodeCard
+            {alarmCodeList.map((value: alarmCode, index, arr) => {
+                return <AlarmCodeCard key={value.alarmCodeId}
                     alarmCode={value}
-                    onDelete={(alarmCodes) => {
-                        // remove from list and call api to delete
-                    } }
-                    onUpdate={(alarmCodes) => {
-                        // update list and call api put
-                    } } 
+                    onDelete={onDeleteCode}
+                    onUpdate={updateCode} 
                     isEditingMode={false}                
                 />
             })}
@@ -71,15 +92,9 @@ const AlarmCodesCard = ({ alarmCodes, store, onCreate, onUpdate, style }: props)
             }} onDelete={function (alarmCode: alarmCode): void {
                 setIsCreating(false);
             }} onUpdate={function (alarmCode: alarmCode): void {
-                if (!createAlarmCode(alarmCode, store.storeId)) {
-                    alert("failed to create new alarm code");
-                }
-                setIsCreating(false);
+                createCode(alarmCode)
             }} isEditingMode={true} 
             />}
-
-            <EditableInputField text={'test'} onUpdate={(newText: string) => { }} />
-
 
         </div>
     );

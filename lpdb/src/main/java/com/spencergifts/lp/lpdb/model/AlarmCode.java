@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -44,7 +45,7 @@ public class AlarmCode {
     private LocalDateTime dateCreated;
 
     // Adding ManyToOne relationship for store_id (foreign key to Store)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)  // Many alarm codes can belong to one store
+    @ManyToOne(fetch = FetchType.LAZY)  // Many alarm codes can belong to one store
     @JoinColumn(name = "store_id", nullable = false)      // This defines the foreign key column in the alarm_codes table
     private Store store;   // Store entity reference
 
@@ -141,7 +142,7 @@ public class AlarmCode {
             ", phoneNumber='" + getPhoneNumber() + "'" +
             ", active='" + isActive() + "'" +
             ", dateCreated='" + getDateCreated() + "'" +
-            ", store='" + getStore() + "'" +
+            ", storeId='" + getStore().getStoreId() + "'" +
             "}";
     }
     

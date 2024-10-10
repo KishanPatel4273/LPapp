@@ -41,8 +41,8 @@
                   "year": 2024
               }]
 
-**PUT api/stores/{id}**
+<!-- **PUT api/stores/{id}**
 - in the body proved new store
 
 **DELETE api/stores/{id}**
-- will delete store with given id
+- will delete store with given id -->

@@ -134,7 +134,7 @@ const request = (data: dataRowType[], year:string) => {
                 year: year,
                 storeNumber: v.storeNumber,
                 previousStoreId: null,
-
+                alarmCodes: [],
                 latitude: Number(v.latitude),
                 longitude: Number(v.longitude),
                 store_phone_number: v?.store_phone_number || "",

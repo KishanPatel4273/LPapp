@@ -16,26 +16,25 @@ import com.spencergifts.lp.lpdb.dto.AlarmCodeDto;
 import com.spencergifts.lp.lpdb.model.AlarmCode;
 import com.spencergifts.lp.lpdb.model.Store;
 import com.spencergifts.lp.lpdb.repository.AlarmCodeRepository;
+import com.spencergifts.lp.lpdb.repository.StoreRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class AlarmCodeService {
     public final AlarmCodeRepository alarmCodeRepository;
-    public final StoreService storeService;
+    public final StoreRepository storeRepository;
 
-    AlarmCodeService(AlarmCodeRepository alarmCodeRepository, StoreService storeService) {
+    AlarmCodeService(AlarmCodeRepository alarmCodeRepository, StoreRepository storeRepository) {
         this.alarmCodeRepository = alarmCodeRepository;
-        this.storeService = storeService;
+        this.storeRepository = storeRepository;
     }
 
     public List<AlarmCodeDto> findAll() {
-        List<AlarmCode> acl =  this.alarmCodeRepository.findAll();
+        List<AlarmCode> acl = this.alarmCodeRepository.findAll();
 
         return acl.stream()
-                .map(ac -> new AlarmCodeDto(ac.getAlarmCodeId(), ac.getFirstName(), ac.getLastName(), 
-                                            ac.getCode(), ac.getPhoneNumber(), ac.getActive(),
-                                            ac.getDateCreated(), ac.getStore().getStoreId()))
+                .map(ac -> convertToDto(ac))
                 .collect(Collectors.toList());
     }
 
@@ -45,20 +44,20 @@ public class AlarmCodeService {
 
     public List<AlarmCode> findByStoreNumber(int store_number, Year year) {
         List<AlarmCode> alarmCodes = this.alarmCodeRepository.findByStoreNumber(store_number, year);
-       
+
         return alarmCodes;
     }
 
     public AlarmCode create(AlarmCode alarmCode) {
         // TODO: check if its valid
 
-        Optional<Store> store = this.storeService.findById(alarmCode.getStore().getStoreId());
-        
-        if (store.isPresent()) {
-            alarmCode.setStore(store.get());
+        Optional<Store> optionalStore = this.storeRepository.findById(alarmCode.getStore().getStoreId());
+
+        if (optionalStore.isPresent()) {
+  
             return this.alarmCodeRepository.save(alarmCode);
         }
-        
+
         throw new ResourceNotFoundException("Store not found!");
     }
 
@@ -68,12 +67,38 @@ public class AlarmCodeService {
     }
 
     @Transactional
-    public
-    void update(AlarmCode store, long store_id){
-    
+    public void update(AlarmCode alarmCode, long id) {
+        Optional<AlarmCode> optionalAC = this.findById(id);
+
+        if (optionalAC.isEmpty()) {
+            throw new ResourceNotFoundException("Alarm Code not found");
+        }
+
+        AlarmCode ac = optionalAC.get();
+        // can only update the following fields
+        ac.setFirstName(alarmCode.getFirstName());
+        ac.setLastName(alarmCode.getLastName());
+        ac.setCode(alarmCode.getCode());
+        ac.setPhoneNumber(alarmCode.getPhoneNumber());
+        ac.setActive(alarmCode.getActive());
+        
+        this.alarmCodeRepository.save(ac);
     }
 
-    public void delete(AlarmCode alarmCode){
+    public void delete(AlarmCode alarmCode) {
+        /**
+         * @NOTE keep in mind that store has cascade all and orphan which allows it to
+         * un link by itself and alarm code being a child should not have cascade
+         */
         this.alarmCodeRepository.delete(alarmCode);
+    }
+
+    public AlarmCodeDto convertToDto(AlarmCode alarmCode) {
+        AlarmCodeDto acd = new AlarmCodeDto(alarmCode.getAlarmCodeId(), alarmCode.getFirstName(),
+                alarmCode.getLastName(), alarmCode.getCode(),
+                alarmCode.getPhoneNumber(), alarmCode.isActive(), alarmCode.getDateCreated(),
+                alarmCode.getStore().getStoreId());
+
+        return acd;
     }
 }

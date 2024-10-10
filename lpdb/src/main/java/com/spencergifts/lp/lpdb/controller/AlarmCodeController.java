@@ -36,17 +36,17 @@ public class AlarmCodeController {
 
     @GetMapping
     public ResponseEntity<List<AlarmCodeDto>> findAll() {
-        return  ResponseEntity.ok().body(this.alarmCodeService.findAll());
+        return ResponseEntity.ok().body(this.alarmCodeService.findAll());
     }
 
     @GetMapping("/{alarm_code_id}")
-    ResponseEntity<AlarmCode> findById(@PathVariable long alarm_code_id) {
+    ResponseEntity<AlarmCodeDto> findById(@PathVariable long alarm_code_id) {
         Optional<AlarmCode> alarmCode = this.alarmCodeService.findById(alarm_code_id);
 
         if (alarmCode.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(alarmCode.get());
+        return ResponseEntity.status(HttpStatus.OK).body(this.alarmCodeService.convertToDto(alarmCode.get()));
     }
 
     @GetMapping("/search")
@@ -64,40 +64,39 @@ public class AlarmCodeController {
     }
 
     @PostMapping
-    ResponseEntity<AlarmCode> create(@RequestBody AlarmCode alarmCode) {
+    ResponseEntity<AlarmCodeDto> create(@RequestBody AlarmCode alarmCode) {
 
         // find the store associated with this alarm_code
         System.err.println(alarmCode.toString());
         try {
-            AlarmCode alarmCode_ = this.alarmCodeService.create(alarmCode);
-            System.out.println(alarmCode_);
-            return ResponseEntity.status(HttpStatus.CREATED).body(alarmCode_);
+            AlarmCode ac = this.alarmCodeService.create(alarmCode);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new AlarmCodeDto(ac.getAlarmCodeId(), ac.getFirstName(), ac.getLastName(),
+                            ac.getCode(), ac.getPhoneNumber(), ac.getActive(),
+                            ac.getDateCreated(), ac.getStore().getStoreId()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
 
-    // @PutMapping("/{alarm_code_id}")
-    // ResponseEntity<AlarmCode> putMethodName(@RequestBody AlarmCode alarmCode, @PathVariable long id) {
-    //     Optional<AlarmCode> _alarm = this.alarmCodeService.findById(id);
+    @PutMapping("/{alarm_code_id}")
+    ResponseEntity<AlarmCodeDto> putMethodName(@RequestBody AlarmCode alarmCode, @PathVariable long alarm_code_id) {
+        try {
+            this.alarmCodeService.update(alarmCode, alarm_code_id);
+            return ResponseEntity.ok().body(null);
+        } catch (Exception e) { 
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
-    //     if (_alarm.isEmpty()) {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    //     }
-
-    //     // TODO: make sure store is valid
-    //     this.alarmCodeService.update(alarmCode, id);
-    //     return ResponseEntity.ok().body(null);
-    // }
-
-    // @DeleteMapping
-    // ResponseEntity<AlarmCode> delete(@PathVariable long id) {
-    //     Optional<AlarmCode> alarmCode = this.alarmCodeService.findById(id);
-
-    //     if (alarmCode.isEmpty()) {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    //     }
-    //     this.alarmCodeService.delete(alarmCode.get());
-    //     return ResponseEntity.status(HttpStatus.OK).body(null);
-    // }
+    @DeleteMapping("/{alarm_code_id}")
+    ResponseEntity<AlarmCodeDto> delete(@PathVariable long alarm_code_id) {
+        Optional<AlarmCode> alarmCode = this.alarmCodeService.findById(alarm_code_id);
+        if (alarmCode.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        this.alarmCodeService.delete(alarmCode.get());
+        return ResponseEntity.status(HttpStatus.OK).body(this.alarmCodeService.convertToDto(alarmCode.get()));
+    }
 }

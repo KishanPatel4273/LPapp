@@ -1,58 +1,35 @@
-package com.spencergifts.lp.lpdb.model;
+package com.spencergifts.lp.lpdb.dto;
 
 import java.time.Year;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.spencergifts.lp.lpdb.model.AlarmCode;
+import com.spencergifts.lp.lpdb.model.StoreType;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "stores")
-public class Store {
+public class StoreDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "store_id", unique = true, nullable = false)
     private long storeId;
-
-    @Column(name = "store_type", nullable = false)
     private StoreType storeType;
-
-    @Column(name = "store_number", nullable = false)
     private int storeNumber;
-
-    @Column(name = "address", nullable = false, length = 128)
     private String address;
-
-    @Column(name = "city", nullable = false, length = 128)
     private String city;
-
-    @Column(name = "state", nullable = false, length = 128)
     private String state;
-
-    @Column(name = "zip", nullable = false, length = 128)
-    private String zip;
-    
-    @Column(name = "year", nullable = false)
+    private String zip;    
     private Year year;
-
-    @Column(name = "previous_store_id", nullable = true)
     private long previousStoreId;
 
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<AlarmCode> alarmCodes = new HashSet<>();
-
-    public Store() {}
+    private Set<AlarmCodeDto> alarmCodes = new HashSet<>();
 
 
-    public Store(long storeId, StoreType storeType, int storeNumber, String address, String city, String state, String zip, Year year, long previousStoreId) {
+    public StoreDto(long storeId, StoreType storeType, int storeNumber, String address, String city, String state, String zip, Year year, long previousStoreId, Set<AlarmCodeDto> alarmCodes) {
         this.storeId = storeId;
         this.storeType = storeType;
         this.storeNumber = storeNumber;
@@ -62,7 +39,9 @@ public class Store {
         this.zip = zip;
         this.year = year;
         this.previousStoreId = previousStoreId;
+        this.alarmCodes = alarmCodes;
     }
+
 
     public long getStoreId() {
         return this.storeId;
@@ -136,14 +115,13 @@ public class Store {
         this.previousStoreId = previousStoreId;
     }
 
-    public Set<AlarmCode> getAlarmCodes() {
+    public Set<AlarmCodeDto> getAlarmCodes() {
         return this.alarmCodes;
     }
 
-    public void setAlarmCodes(Set<AlarmCode> alarmCodes) {
+    public void setAlarmCodes(Set<AlarmCodeDto> alarmCodes) {
         this.alarmCodes = alarmCodes;
     }
-    
 
     @Override
     public String toString() {
@@ -157,7 +135,8 @@ public class Store {
             ", zip='" + getZip() + "'" +
             ", year='" + getYear() + "'" +
             ", previousStoreId='" + getPreviousStoreId() + "'" +
+            ", alarmCodes='" + getAlarmCodes() + "'" +
             "}";
     }
-
+    
 }

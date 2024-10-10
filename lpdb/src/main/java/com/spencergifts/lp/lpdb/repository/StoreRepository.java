@@ -1,6 +1,7 @@
 package com.spencergifts.lp.lpdb.repository;
 
 import java.time.Year;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,8 +15,8 @@ import jakarta.transaction.Transactional;
 
 public interface StoreRepository extends ListCrudRepository<Store, Long> {
 
-    // @Query(value="SELECT * FROM stores WHERE store_number = :store_number AND year = :year" , nativeQuery = true)
-    // Store findByStoreNumber(@Param("store_number") int store_number, @Param("year") Year year);
+    @Query(value="SELECT * FROM stores WHERE store_number = :store_number AND year = :year" , nativeQuery = true)
+    List<Store> findByStoreNumberAndYear(@Param("store_number") int store_number, @Param("year") Year year);
     
 
     // @Modifying

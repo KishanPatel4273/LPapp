@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, SetStateAction, Dispatch } from 'react';
 
 import { store } from '../api';
 import { YearSelector } from './components/StoreSearchBar';
@@ -15,31 +15,14 @@ import { useNavigate } from 'react-router-dom';
 import AddStoreButton from './components/AddStoreButton';
 import { getStores } from '../api/StoreAPI';
 
-const stores_: store[] = Array.from({ length: 100 }, (_, index) => ({
-    storeId: index + 1,
-    storeType: index % 2 === 0 ? "SPIRIT" : "SPENCER",
-    address: `${1000 + index} South White Rd.1234567890123456789`,
-    city: index % 3 === 0 ? "San Jose" : index % 3 === 1 ? "Santa Clara" : "Sunnyvale",
-    state: index % 3 === 0 ? "CA" : index % 3 === 1 ? "NJ" : "MT",
-    zip: `95${100 + index}`,
-    year: `${2024 - (index % 5)}`,
-    previousStoreId: index === 0 ? 0 : index,
-    storeNumber: `${61000 + index}`,
-    latitude: 1,
-    longitude: 1, 
-    total_square_foot: 1,
-    poss_date: new Date(),
-    create_date: new Date(), 
-    allows_early_drop: true, 
-    live_load: false, 
-    extended_stay: true, 
-    stay_length: 1
-}));
+type props = {
+    yearState: [string, Dispatch<SetStateAction<string>>],
+}
 
-const StorePage = () => {
+const StorePage = ({yearState} : props) => {
     const navigate = useNavigate();
 
-    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString()); // this sets the default to current year
+    const [selectedYear, setSelectedYear] = yearState// useState(new Date().getFullYear().toString()); // this sets the default to current year
     const [selectedStoreType, setSelectedStoreType] = useState<"SPIRIT" | "SPENCER">("SPIRIT"); // this sets the default to current year
 
     const columns = useMemo<MRT_ColumnDef<any, any>[]>(
@@ -85,8 +68,11 @@ const StorePage = () => {
     );
 
     const [storeData, setStoreData] = useState<store[]>([])
-    const data = stores_
     const [test, setTest] = useState("");
+
+    useEffect(() => {
+        setSelectedYear(yearState[0])
+    }, [yearState])
 
     useEffect(() => {
         const loadStores = async () => {

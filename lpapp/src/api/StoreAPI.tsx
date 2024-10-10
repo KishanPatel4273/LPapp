@@ -1,3 +1,4 @@
+import { alarmCode } from "./AlarmAPI";
 
 export type storeType = "SPIRIT" | "SPENCER";
 
@@ -31,7 +32,8 @@ export type store = {
     live_load_reason?: string,
     extended_stay: boolean,
     stay_length: Number,
-    // alarmCodesList: [AlarmCodes!]!
+    
+    alarmCodes: alarmCode[]
     // //  parts that are requested
     // rmOrdersList: [RmOrders!]!
     // //  dsm's to their stores
@@ -83,9 +85,9 @@ export const getStores = async (): Promise<store[] | null> => {
     }
 };
 
-export const getStore = async ({store_number} : {store_number : string}): Promise<store | null> => {
+export const getStore = async (storeNumber: string, year: string) : Promise<store | null> => {
     try { 
-        const response = await fetch(`/api/stores/${store_number}`, {
+        const response = await fetch(`/api/stores/search?storeNumber=${storeNumber}&year=${year}`, {
             method: 'GET',
         });
 
