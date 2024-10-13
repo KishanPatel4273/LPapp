@@ -23,7 +23,34 @@ const Store = ({ year }: { year: string }) => {
     const location = useLocation();
     const [storeData, setStoreData] = useState<store | null>();
 
+    const { store_number } = useParams<{ store_number: string }>();
+
+
     useEffect(() => {
+
+        if (storeData === null) {
+            const store : store = {
+                storeType: "SPIRIT",
+                address: "",
+                city: "",
+                state: "",
+                zip: "",
+                year: year,
+                storeNumber: store_number,
+                latitude: 0,
+                longitude: 0,
+                total_square_foot: 0,
+                poss_date: undefined,
+                create_date: undefined,
+                allows_early_drop: false,
+                live_load: false,
+                extended_stay: false,
+                stay_length: undefined,
+                alarmCodes: []
+            }
+            setStoreData(store)
+        }
+
 
         // if (location.state != null) {
         //     setStoreData(location.state)
@@ -31,8 +58,9 @@ const Store = ({ year }: { year: string }) => {
         // }
         // console.log("store d", location.state.store_id, storeData)
         //@TODO 
+
         const loadStore = async () => {
-            const store = await getStore(location.state.storeNumber, year);
+            const store = await getStore(store_number, year);
 
             if (store) {
                 console.log("store got data from api")
@@ -82,9 +110,9 @@ const Store = ({ year }: { year: string }) => {
                     dataMap={[
                         {
                             displayName: 'code',
-                            valueFn: (data: alarmCode) => {return data['code']},
+                            valueFn: (data: alarmCode) => { return data['code'] },
                             onUpdate: (value: string, currentData: alarmCode, updatedData) => {
-                                return {code: value }
+                                return { code: value }
                             },
                         },
                         {
@@ -100,27 +128,27 @@ const Store = ({ year }: { year: string }) => {
                                     return { ...updatedData, firstName: vl[0], lastName: vl[1] }
                                 }
                             },
-                            styleInput:{marginLeft: 10, marginRight: 10, maxWidth: 150 },
+                            styleInput: { marginLeft: 10, marginRight: 10, maxWidth: 150 },
                         },
                         {
                             displayName: '',
-                            valueFn: (data: alarmCode) => {return formatPhoneNumber(data['phoneNumber'])},
+                            valueFn: (data: alarmCode) => { return formatPhoneNumber(data['phoneNumber']) },
 
                             onUpdate: (value: string, currentData: alarmCode, updatedData: alarmCode) => {
-                                return {...updatedData, phoneNumber:clearFormattingPhoneNumber(value)}
+                                return { ...updatedData, phoneNumber: clearFormattingPhoneNumber(value) }
                             }
                         },
                     ]}
                     store={storeData}
 
-                    onCreate={(data : alarmCode) => {
+                    onCreate={(data: alarmCode) => {
                         return createAlarmCode(data, storeData.storeId)
                     }}
-                    onUpdate={(current : alarmCode, updated : alarmCode) => {
+                    onUpdate={(current: alarmCode, updated: alarmCode) => {
                         return updateAlarmCode(updated, current.alarmCodeId)
                     }}
-                    onDelete={(data : alarmCode) => {
-                        if(data?.alarmCodeId) {
+                    onDelete={(data: alarmCode) => {
+                        if (data?.alarmCodeId) {
                             return deleteAlarmCode(data['alarmCodeId'])
                         }
                         return null

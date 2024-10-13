@@ -93,8 +93,11 @@ const StorePage = ({yearState} : props) => {
         enablePagination: false,
         muiTableBodyCellProps: ({ cell, column, row, table }) => ({
             onDoubleClick: (event) => {
+                console.log(row.original)
                 navigate(`/stores/${row.original.storeNumber}`, 
-                    {state:row.original}
+                    {
+                        state:row.original
+                    }
 
                 )
                 console.log("row:", row.original)
