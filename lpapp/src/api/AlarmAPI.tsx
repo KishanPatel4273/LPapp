@@ -72,7 +72,7 @@ export const getAlarmCodes = async (store_number: number, year: number): Promise
 }
 
 // Function to create one or more alarm codes
-export const createAlarmCode = async (alarmCodes: alarmCode, storeId: number): Promise<alarmCode | false> => {
+export const createAlarmCode = async (alarmCodes: alarmCode, storeId: number): Promise<alarmCode | null> => {
     try {
 
         console.log("making alarm code");
@@ -99,15 +99,15 @@ export const createAlarmCode = async (alarmCodes: alarmCode, storeId: number): P
             return response.data
         } else {
             console.log(`Unexpected response status: ${response.status}`);
-            return false
+            return null
         }
     } catch (error) {
         console.error('Unexpected error:', error);
-        return false
+        return null
     }
 };
 
-export const updateAlarmCode = async (alarmCodes: alarmCode, alarmId: number): Promise<alarmCode | false> => {
+export const updateAlarmCode = async (alarmCodes: alarmCode, alarmId: number): Promise<alarmCode | null> => {
     try {
 
 
@@ -134,15 +134,15 @@ export const updateAlarmCode = async (alarmCodes: alarmCode, alarmId: number): P
             return response.data
         } else {
             console.log(`Unexpected response status: ${response.status}`);
-            return false
+            return null
         }
     } catch (error) {
         console.error('Unexpected error:', error);
-        return false
+        return null
     }
 };
 
-export const deleteAlarmCode = async (id) => {
+export const deleteAlarmCode = async (id) : Promise<alarmCode | null> => {
     try {
         const response = await axios.delete(`/api/alarms/${id}`);
 
@@ -156,5 +156,5 @@ export const deleteAlarmCode = async (id) => {
             console.error("An error occurred while deleting the alarm code:", error.message);
         }
     }
-    return false
+    return null
 };
