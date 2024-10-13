@@ -5,7 +5,8 @@ import AddressCard from '../components/AddressCard';
 import { getStore, getStores } from '../../api/StoreAPI';
 import Card from '../components/card/Card';
 
-import { clearFormattingPhoneNumber, createAlarmCode, deleteAlarmCode, formatPhoneNumber, updateAlarmCode } from '../../api/AlarmAPI';
+import { createAlarmCode, deleteAlarmCode, updateAlarmCode } from '../../api/AlarmAPI';
+import { clearFormattingPhoneNumber, formatPhoneNumber } from '../../utils';
 
 
 type props = {

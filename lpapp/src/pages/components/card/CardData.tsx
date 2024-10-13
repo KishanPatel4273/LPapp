@@ -9,11 +9,14 @@ import { dsm } from "../../../api";
 export type dataMapProps<T> = {
     displayName: string
     valueFn: (data: T) => string
+    // validate : (data : T) => boolean
+
     onUpdate: (
         value: string,
         currentData: T,
         updatedData: T,
     ) => {}
+    
     styleInput?: {}
 }
 
