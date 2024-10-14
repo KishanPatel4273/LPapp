@@ -1,10 +1,12 @@
 
-import { formatPhoneNumber, clearFormattingPhoneNumber }from './format_strings'
+import { formatPhoneNumber, clearFormattingPhoneNumber, pad, isNumeric }from './format_strings'
 
 
 
 export {
     formatPhoneNumber,
-    clearFormattingPhoneNumber
+    clearFormattingPhoneNumber,
+    pad,
+    isNumeric,
 
 }

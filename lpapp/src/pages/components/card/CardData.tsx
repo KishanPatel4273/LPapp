@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import ClearIcon from '@mui/icons-material/Clear';
 import CheckIcon from '@mui/icons-material/Check';
@@ -9,7 +9,8 @@ import { dsm } from "../../../api";
 export type dataMapProps<T> = {
     displayName: string
     valueFn: (data: T) => string
-    // validate : (data : T) => boolean
+    validate : (data : T) => boolean
+    maxLength? : number
 
     onUpdate: (
         value: string,
@@ -47,6 +48,10 @@ const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMod
  
     }
 
+    useEffect(() => {
+        setData(value)
+    }, [value])
+
     return (
         <div
             style={{ ...styles.container, ...style }}
@@ -78,10 +83,12 @@ const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMod
 
                 return (
                     <InputField
-                        key={index}
+                        key={index + "_" + dataMap.valueFn(data)} // if the key changes this will cause a rerender of component
                         value={dataMap.valueFn(data)} 
                         style={{...dataMap.styleInput}}
                         editMode={isEditing} 
+                        maxLength={dataMap.maxLength}
+                        // @TODO add validate 
                         onUpdate={(value : string) => {
                             setUpdatedData({...updatedData, ...dataMap.onUpdate(value, data, updatedData)})
                         }}

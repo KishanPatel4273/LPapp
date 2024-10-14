@@ -6,7 +6,7 @@ import { getStore, getStores } from '../../api/StoreAPI';
 import Card from '../components/card/Card';
 
 import { createAlarmCode, deleteAlarmCode, updateAlarmCode } from '../../api/AlarmAPI';
-import { clearFormattingPhoneNumber, formatPhoneNumber } from '../../utils';
+import { clearFormattingPhoneNumber, formatPhoneNumber, isNumeric, pad } from '../../utils';
 
 
 type props = {
@@ -110,32 +110,43 @@ const Store = ({ year }: { year: string }) => {
                     dataMap={[
                         {
                             displayName: 'code',
-                            valueFn: (data: alarmCode) => { return data['code'] },
+                            valueFn: (data: alarmCode) => { return data['code']; },
+                            maxLength: 4,
                             onUpdate: (value: string, currentData: alarmCode, updatedData) => {
-                                return { code: value }
+                                return { code: pad(value, 4) };
                             },
+                            validate: function (data: alarmCode): boolean {
+                                return isNumeric(data.code);
+                            }
                         },
                         {
-                            displayName: '',
-                            valueFn: (data: alarmCode) => { return data.firstName + " " + data.lastName },
+                            displayName: 'name',
+                            valueFn: (data: alarmCode) => { return data.firstName + " " + data.lastName; },
+                            maxLength: 128,
                             onUpdate: (value: string, currentData: alarmCode, updatedData) => {
-                                const vt = value.trim()
-                                const vl = vt.split(" ")
+                                const vt = value.trim();
+                                const vl = vt.split(" ");
                                 if (vl.length <= 1) {
-                                    return { ...updatedData, firstName: vl[0] }
+                                    return { ...updatedData, firstName: vl[0] };
                                 } else if (vl.length >= 2) {
-                                    console.log("saved name")
-                                    return { ...updatedData, firstName: vl[0], lastName: vl[1] }
+                                    console.log("saved name");
+                                    return { ...updatedData, firstName: vl[0], lastName: vl[1] };
                                 }
                             },
                             styleInput: { marginLeft: 10, marginRight: 10, maxWidth: 150 },
+                            validate: function (data: alarmCode): boolean {
+                                return true;
+                            }
                         },
                         {
-                            displayName: '',
-                            valueFn: (data: alarmCode) => { return formatPhoneNumber(data['phoneNumber']) },
-
+                            displayName: 'phone number',
+                            valueFn: (data: alarmCode) => { return formatPhoneNumber(pad(data['phoneNumber'], 10)); },
+                            maxLength: 10,
                             onUpdate: (value: string, currentData: alarmCode, updatedData: alarmCode) => {
-                                return { ...updatedData, phoneNumber: clearFormattingPhoneNumber(value) }
+                                return { ...updatedData, phoneNumber: clearFormattingPhoneNumber(value) };
+                            },
+                            validate: function (data: alarmCode): boolean {
+                                return isNumeric(data.code);
                             }
                         },
                     ]}

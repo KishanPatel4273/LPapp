@@ -4,13 +4,13 @@
   "settings": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": -370,
-    "scrollLeft": -800,
+    "scrollTop": -439.2,
+    "scrollLeft": -190.8,
     "zoomLevel": 1,
     "show": 431,
     "database": 4,
     "databaseName": "",
-    "canvasType": "@dineug/erd-editor/builtin-generator-code",
+    "canvasType": "ERD",
     "language": 1,
     "tableNameCase": 4,
     "columnNameCase": 2,
@@ -121,8 +121,8 @@
           "mwSVHzZfbzYHfdIdpPs4Q",
           "h_NvqOsRcrODtfGlDe8mB",
           "JDrPF3C8WfQCOHZwbHj1j",
-          "FJ8xjxMaC42b8H2iPdDi9",
           "8cbMyCuLSF2ZGsTYXMFpx",
+          "FJ8xjxMaC42b8H2iPdDi9",
           "mqFZo3LCacZ80Cwm5dYKK"
         ],
         "seqColumnIds": [
@@ -143,11 +143,11 @@
           "mwSVHzZfbzYHfdIdpPs4Q",
           "h_NvqOsRcrODtfGlDe8mB",
           "JDrPF3C8WfQCOHZwbHj1j",
-          "FJ8xjxMaC42b8H2iPdDi9",
-          "LC966Wpvrum5kDnYe8m1l",
           "8cbMyCuLSF2ZGsTYXMFpx",
-          "QlDTdQyVtJ6yUGWtWzhd-",
-          "mqFZo3LCacZ80Cwm5dYKK"
+          "FJ8xjxMaC42b8H2iPdDi9",
+          "mqFZo3LCacZ80Cwm5dYKK",
+          "LC966Wpvrum5kDnYe8m1l",
+          "QlDTdQyVtJ6yUGWtWzhd-"
         ],
         "ui": {
           "x": 1241.3565,
@@ -158,7 +158,7 @@
           "color": ""
         },
         "meta": {
-          "updateAt": 1724210979846,
+          "updateAt": 1728847284730,
           "createAt": 1724101204276
         }
       },
