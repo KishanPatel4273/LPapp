@@ -6,25 +6,40 @@ import InputField from "../InputField";
 import { dsm } from "../../../api";
 
 
-export type dataMapProps<T> = {
+export type dataMapType = "INPUT" | "DROPDOWN"
+
+export type dataMapBase<T> = {
+    type?: dataMapType
     displayName: string
     valueFn: (data: T) => string
-    validate : (data : T) => boolean
-    maxLength? : number
-
     onUpdate: (
         value: string,
         currentData: T,
         updatedData: T,
     ) => {}
-    
-    styleInput?: {}
+    style?: {}
+
 }
+
+export type dataMapInput<T> = dataMapBase<T> & {
+    type: "INPUT"
+    validate: (data: T) => boolean
+    maxLength?: number
+}
+
+export type dataMapDropDown<T> = dataMapBase<T> & {
+    type: "DROPDOWN"
+    options: string[]
+    defaultOption: string
+}
+
+export type dataMapProps<T> = dataMapInput<T> | dataMapDropDown<T>
+
 
 type props<T> = {
     value: T;
     dataMap: dataMapProps<T>[]
-    
+
     onDelete: (data: T) => void;
     onUpdate: (current: T, updated: T) => void
     editingMode: boolean;
@@ -45,7 +60,7 @@ const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMod
         onUpdate(data, updatedData)
         // update current data
         setData(updatedData)
- 
+
     }
 
     useEffect(() => {
@@ -71,29 +86,59 @@ const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMod
                             backgroundColor: 'transparent',    // Background color (optional)
                             cursor: 'pointer'           // Change the cursor on hover
                         }}
-                        onClick={() => {onDelete(data)}}
+                        onClick={() => { onDelete(data) }}
                     >
                         <ClearIcon style={{ color: 'red' }} />
                     </button>
                 </div>}
 
-            {dataMap.map((dataMap:dataMapProps<T>,
-                          index:number,
-                          array:dataMapProps<T>[]) => {
+            {dataMap.map((dataMap: dataMapProps<T>,
+                index: number,
+                array: dataMapProps<T>[]) => {
 
-                return (
-                    <InputField
-                        key={index + "_" + dataMap.valueFn(data)} // if the key changes this will cause a rerender of component
-                        value={dataMap.valueFn(data)} 
-                        style={{...dataMap.styleInput}}
-                        editMode={isEditing} 
-                        maxLength={dataMap.maxLength}
-                        // @TODO add validate 
-                        onUpdate={(value : string) => {
-                            setUpdatedData({...updatedData, ...dataMap.onUpdate(value, data, updatedData)})
-                        }}
-                    />
-                )
+                switch (dataMap.type) {
+                    case "INPUT":
+                        return (
+                            <InputField
+                                key={index + "_" + dataMap.valueFn(data)} // if the key changes this will cause a rerender of component
+                                value={dataMap.valueFn(data)}
+                                style={{ ...dataMap.style }}
+                                editMode={isEditing}
+                                maxLength={dataMap.maxLength}
+                                // @TODO add validate 
+                                onUpdate={(value: string) => {
+                                    setUpdatedData({ ...updatedData, ...dataMap.onUpdate(value, data, updatedData) })
+                                }}
+                            />
+                        )
+                    case "DROPDOWN":
+                        return (
+                            <>
+                                {isEditing ? (
+                                    <select
+                                        key={index + "_" + dataMap.valueFn(data)} // if the key changes this will cause a rerender of component
+                                        value={dataMap.defaultOption}
+                                        onChange={(e) => setUpdatedData({ ...updatedData, ...dataMap.onUpdate(e.target.value, data, updatedData) })}
+                                        style={{ ...dataMap.style }}
+                                    >
+                                        {dataMap.options.map(option => (
+                                            <option key={option} value={option}>
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : (
+                                    <div
+                                        style={{ display: 'flex', textAlign: 'center' }}
+                                    >
+                                        {dataMap.valueFn(data)}
+                                    </div>)
+                                }
+                            </>
+                        )
+                }
+
+
             })}
 
             {isEditing &&

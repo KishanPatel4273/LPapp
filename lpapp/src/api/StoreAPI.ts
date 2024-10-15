@@ -1,4 +1,5 @@
 import { alarmCode } from "./AlarmAPI";
+import { alarmPanel } from "./AlarmPanelAPI";
 
 export type storeType = "SPIRIT" | "SPENCER";
 
@@ -34,6 +35,7 @@ export type store = {
     stay_length: Number,
     
     alarmCodes: alarmCode[]
+    alarmPanels: alarmPanel[]
     // //  parts that are requested
     // rmOrdersList: [RmOrders!]!
     // //  dsm's to their stores

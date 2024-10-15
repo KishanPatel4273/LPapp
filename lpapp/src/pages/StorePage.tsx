@@ -13,7 +13,7 @@ import {
 import { MRT_ColumnDef } from 'material-react-table'; // Adjust import based on your library
 import { useNavigate } from 'react-router-dom';
 import AddStoreButton from './components/AddStoreButton';
-import { getStores } from '../api/StoreAPI';
+import { getStores } from '../api';
 
 type props = {
     yearState: [string, Dispatch<SetStateAction<string>>],

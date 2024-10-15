@@ -1,5 +1,11 @@
 
 
+type char = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' 
+| 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' 
+| 'y' | 'z' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' 
+| 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' 
+| 'Y' | 'Z' | '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
+
 /**
  * Pads a given string with leading zeros until it reaches the specified length.
  * If the provided string is already longer than the specified length, 
@@ -9,11 +15,12 @@
  * @param n - The desired length of the output string.
  * @returns The padded or truncated string.
  */
-export const pad = (value: string, n: number): string => {
+export const pad = (value: string, n: number, pad : char ="0"): string => {
     if (n <= value.length) {
       return value.substring(0, n);
     }
-    return "0".repeat(n - value.length) + value;
+
+    return pad.repeat(n - value.length) + value;
 };
 
 /**

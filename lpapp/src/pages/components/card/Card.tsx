@@ -8,7 +8,7 @@ type props<T> = {
     // object name refrencing id or id param
     id: string
     dataList: T[]
-    defualtData: T
+    defaultData: T
 
     dataMap: dataMapProps<T>[]
 
@@ -74,6 +74,29 @@ const Card = <T extends {}>(props: props<T>) => {
                 {props.title}
             </div>
 
+
+            {/* Header */}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                // margin: '5px'
+            }}>
+                {props.dataMap.map((dataMap: dataMapProps<T>,
+                    index: number,
+                    array: dataMapProps<T>[]) => {
+                    return (
+                        <div 
+                            key={dataMap.displayName}
+                            style={{marginLeft: '5px', marginRight: '5px'}}
+                        >
+                            {dataMap.displayName}
+                        </div>
+                    )
+                }
+                )}
+            </div>
+
             {dataList.map((value: T, index: number, array: T[]) => {
                 return <CardData<T>
                     key={value[props.id]}
@@ -95,12 +118,12 @@ const Card = <T extends {}>(props: props<T>) => {
                 </div>
             </div>}
 
-            {isCreating && <CardData<T> 
-                value={props.defualtData} 
-                dataMap={props.dataMap} 
-                onDelete={(data : T) => {setIsCreating(false)}} 
-                onUpdate={(current : T, updated : T) => {onCreate(updated)}} 
-                editingMode={true} 
+            {isCreating && <CardData<T>
+                value={props.defaultData}
+                dataMap={props.dataMap}
+                onDelete={(data: T) => { setIsCreating(false) }}
+                onUpdate={(current: T, updated: T) => { onCreate(updated) }}
+                editingMode={true}
             />}
 
         </div>
