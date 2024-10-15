@@ -6,15 +6,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spencergifts.lp.lpdb.dto.AlarmCodeDto;
 import com.spencergifts.lp.lpdb.model.AlarmCode;
-import com.spencergifts.lp.lpdb.model.Store;
 import com.spencergifts.lp.lpdb.service.AlarmCodeService;
-import com.spencergifts.lp.lpdb.service.StoreService;
 
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -81,7 +78,7 @@ public class AlarmCodeController {
     }
 
     @PutMapping("/{alarm_code_id}")
-    ResponseEntity<AlarmCodeDto> putMethodName(@RequestBody AlarmCode alarmCode, @PathVariable long alarm_code_id) {
+    ResponseEntity<AlarmCodeDto> update(@RequestBody AlarmCode alarmCode, @PathVariable long alarm_code_id) {
         try {
             this.alarmCodeService.update(alarmCode, alarm_code_id);
             return ResponseEntity.ok().body(null);

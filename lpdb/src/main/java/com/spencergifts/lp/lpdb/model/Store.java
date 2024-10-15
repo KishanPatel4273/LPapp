@@ -4,12 +4,18 @@ import java.time.Year;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.spencergifts.lp.lpdb.enums.StoreType;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -39,7 +45,7 @@ public class Store {
 
     @Column(name = "zip", nullable = false, length = 128)
     private String zip;
-    
+
     @Column(name = "year", nullable = false)
     private Year year;
 
@@ -49,10 +55,16 @@ public class Store {
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AlarmCode> alarmCodes = new HashSet<>();
 
-    public Store() {}
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH })
+    @JoinTable(name = "store_alarm_panel", // Join table name
+            joinColumns = @JoinColumn(name = "store_id"), inverseJoinColumns = @JoinColumn(name = "alarm_panel_id"))
+    private Set<AlarmPanel> alarmPanels = new HashSet<>();
 
+    public Store() {
+    }
 
-    public Store(long storeId, StoreType storeType, int storeNumber, String address, String city, String state, String zip, Year year, long previousStoreId) {
+    public Store(long storeId, StoreType storeType, int storeNumber, String address, String city, String state,
+            String zip, Year year, long previousStoreId) {
         this.storeId = storeId;
         this.storeType = storeType;
         this.storeNumber = storeNumber;
@@ -143,21 +155,28 @@ public class Store {
     public void setAlarmCodes(Set<AlarmCode> alarmCodes) {
         this.alarmCodes = alarmCodes;
     }
-    
+
+    public Set<AlarmPanel> getAlarmPanels() {
+        return this.alarmPanels;
+    }
+
+    public void setAlarmPanels(Set<AlarmPanel> alarmPanels) {
+        this.alarmPanels = alarmPanels;
+    }
 
     @Override
     public String toString() {
         return "{" +
-            " storeId='" + getStoreId() + "'" +
-            ", storeType='" + getStoreType() + "'" +
-            ", storeNumber='" + getStoreNumber() + "'" +
-            ", address='" + getAddress() + "'" +
-            ", city='" + getCity() + "'" +
-            ", state='" + getState() + "'" +
-            ", zip='" + getZip() + "'" +
-            ", year='" + getYear() + "'" +
-            ", previousStoreId='" + getPreviousStoreId() + "'" +
-            "}";
+                " storeId='" + getStoreId() + "'" +
+                ", storeType='" + getStoreType() + "'" +
+                ", storeNumber='" + getStoreNumber() + "'" +
+                ", address='" + getAddress() + "'" +
+                ", city='" + getCity() + "'" +
+                ", state='" + getState() + "'" +
+                ", zip='" + getZip() + "'" +
+                ", year='" + getYear() + "'" +
+                ", previousStoreId='" + getPreviousStoreId() + "'" +
+                "}";
     }
 
 }

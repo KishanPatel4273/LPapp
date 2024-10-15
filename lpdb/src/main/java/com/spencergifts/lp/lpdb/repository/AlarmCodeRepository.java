@@ -1,18 +1,14 @@
 package com.spencergifts.lp.lpdb.repository;
 
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.spencergifts.lp.lpdb.model.AlarmCode;
-import com.spencergifts.lp.lpdb.model.StoreType;
 
-import jakarta.transaction.Transactional;
 
 public interface AlarmCodeRepository extends ListCrudRepository<AlarmCode, Long> {
     

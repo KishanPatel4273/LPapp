@@ -4,16 +4,7 @@ import java.time.Year;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.spencergifts.lp.lpdb.model.AlarmCode;
-import com.spencergifts.lp.lpdb.model.StoreType;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-
+import com.spencergifts.lp.lpdb.enums.StoreType;
 public class StoreDto {
 
     private long storeId;
@@ -22,14 +13,15 @@ public class StoreDto {
     private String address;
     private String city;
     private String state;
-    private String zip;    
+    private String zip;
     private Year year;
     private long previousStoreId;
 
     private Set<AlarmCodeDto> alarmCodes = new HashSet<>();
+    private Set<AlarmPanelDto> alarmPanels = new HashSet<>();
 
-
-    public StoreDto(long storeId, StoreType storeType, int storeNumber, String address, String city, String state, String zip, Year year, long previousStoreId, Set<AlarmCodeDto> alarmCodes) {
+    public StoreDto(long storeId, StoreType storeType, int storeNumber, String address, String city, String state,
+            String zip, Year year, long previousStoreId, Set<AlarmCodeDto> alarmCodes, Set<AlarmPanelDto> alarmPanels) {
         this.storeId = storeId;
         this.storeType = storeType;
         this.storeNumber = storeNumber;
@@ -40,8 +32,8 @@ public class StoreDto {
         this.year = year;
         this.previousStoreId = previousStoreId;
         this.alarmCodes = alarmCodes;
+        this.alarmPanels = alarmPanels;
     }
-
 
     public long getStoreId() {
         return this.storeId;
@@ -123,20 +115,28 @@ public class StoreDto {
         this.alarmCodes = alarmCodes;
     }
 
+    public Set<AlarmPanelDto> getAlarmPanels() {
+        return this.alarmPanels;
+    }
+
+    public void setAlarmPanels(Set<AlarmPanelDto> alarmPanels) {
+        this.alarmPanels = alarmPanels;
+    }
+
     @Override
     public String toString() {
         return "{" +
-            " storeId='" + getStoreId() + "'" +
-            ", storeType='" + getStoreType() + "'" +
-            ", storeNumber='" + getStoreNumber() + "'" +
-            ", address='" + getAddress() + "'" +
-            ", city='" + getCity() + "'" +
-            ", state='" + getState() + "'" +
-            ", zip='" + getZip() + "'" +
-            ", year='" + getYear() + "'" +
-            ", previousStoreId='" + getPreviousStoreId() + "'" +
-            ", alarmCodes='" + getAlarmCodes() + "'" +
-            "}";
+                " storeId='" + getStoreId() + "'" +
+                ", storeType='" + getStoreType() + "'" +
+                ", storeNumber='" + getStoreNumber() + "'" +
+                ", address='" + getAddress() + "'" +
+                ", city='" + getCity() + "'" +
+                ", state='" + getState() + "'" +
+                ", zip='" + getZip() + "'" +
+                ", year='" + getYear() + "'" +
+                ", previousStoreId='" + getPreviousStoreId() + "'" +
+                ", alarmCodes='" + getAlarmCodes() + "'" +
+                ", alarmPanels='" + getAlarmPanels() + "'" +
+                "}";
     }
-    
 }

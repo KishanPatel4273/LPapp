@@ -21,7 +21,7 @@ public class AlarmCodeDto {
 
     private long storeID;   // Store entity reference
 
-    // public AlarmCodeDto() {}
+    public AlarmCodeDto() {}
 
     public AlarmCodeDto(long alarmCodeId, String firstName, String lastName, String code, String phoneNumber, boolean active, LocalDateTime dateCreated, long storeID) {
         this.alarmCodeId = alarmCodeId;
