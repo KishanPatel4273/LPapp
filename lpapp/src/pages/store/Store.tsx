@@ -7,6 +7,7 @@ import Card from '../components/card/Card';
 
 import { createAlarmCode, deleteAlarmCode, updateAlarmCode } from '../../api';
 import { clearFormattingPhoneNumber, formatPhoneNumber, isNumeric, pad } from '../../utils';
+import { addStoreToAlarmPanel, getAlarmPanels, removeStoreToAlarmPanel } from '../../api/AlarmPanelAPI';
 
 
 type props = {
@@ -24,7 +25,6 @@ const Store = ({ year }: { year: string }) => {
     const [storeData, setStoreData] = useState<store | null>();
 
     const { store_number } = useParams<{ store_number: string }>();
-
 
     useEffect(() => {
 
@@ -84,7 +84,7 @@ const Store = ({ year }: { year: string }) => {
                 alignItems: 'center', // Centers content vertically
                 textAlign: 'center',
             }}>
-                {storeData ? storeData.storeNumber : 'ERROR'}
+                {storeData ? storeData.storeType + " " + storeData.storeNumber : 'ERROR'}
             </div>
             <div style={{ display: 'flex', flexDirection: 'row' }}>
 
@@ -96,8 +96,8 @@ const Store = ({ year }: { year: string }) => {
                 {storeData && <Card<alarmCode>
                     title={'Alarm Codes'}
                     id={"alarmCodeId"}
-
                     dataList={storeData ? storeData.alarmCodes : []}
+                    createMode='many-one-add'
                     defaultData={{
                         firstName: '',
                         lastName: '',
@@ -110,7 +110,7 @@ const Store = ({ year }: { year: string }) => {
                     }}
                     dataMap={[
                         {
-                            type : 'INPUT',
+                            type: 'INPUT',
                             displayName: 'code',
                             valueFn: (data: alarmCode) => { return data['code']; },
                             maxLength: 4,
@@ -122,7 +122,7 @@ const Store = ({ year }: { year: string }) => {
                             }
                         },
                         {
-                            type : 'INPUT',
+                            type: 'INPUT',
                             displayName: 'name',
                             valueFn: (data: alarmCode) => { return data.firstName + " " + data.lastName; },
                             maxLength: 128,
@@ -142,7 +142,7 @@ const Store = ({ year }: { year: string }) => {
                             }
                         },
                         {
-                            type : 'INPUT',
+                            type: 'INPUT',
                             displayName: 'phone number',
                             valueFn: (data: alarmCode) => { return formatPhoneNumber(pad(data['phoneNumber'], 10)); },
                             maxLength: 10,
@@ -176,6 +176,7 @@ const Store = ({ year }: { year: string }) => {
                         title={'Panel'}
                         id={'alarmPanelId'}
                         dataList={storeData.alarmPanels}
+                        createMode='many-to-many-select-add'
                         defaultData={{
                             alarmPanelId: 0,
                             panelNumber: '',
@@ -185,24 +186,23 @@ const Store = ({ year }: { year: string }) => {
                             imei: '',
                             iccid: '',
                             stores: []
-                        }} 
+                        }}
                         dataMap={[
                             {
-                                type : 'DROPDOWN',
+                                type: 'DROPDOWN',
                                 displayName: 'Type',
-                                defaultOption: 'ONSITE',
                                 options: ['ONSITE', 'OFFSITE', 'OLD'],
                                 valueFn: function (data: alarmPanel): string {
                                     return data.alarmPanelType
                                 },
                                 onUpdate: function (value: string, currentData: alarmPanel, updatedData: alarmPanel): {} {
-                                    return {alarmPanelType: value}
+                                    return { alarmPanelType: value }
                                 }
                             },
                             {
-                                type : 'INPUT',
+                                type: 'INPUT',
                                 displayName: 'panel',
-                                maxLength : 4,
+                                maxLength: 4,
                                 valueFn: function (data: alarmPanel): string {
                                     return pad(data.panelNumber, 4)
                                 },
@@ -210,13 +210,13 @@ const Store = ({ year }: { year: string }) => {
                                     return isNumeric(data.panelNumber)
                                 },
                                 onUpdate: function (value: string, currentData: alarmPanel, updatedData: alarmPanel): {} {
-                                    return {panelNumber: value}
+                                    return { panelNumber: value }
                                 }
                             },
                             {
-                                type : 'INPUT',
+                                type: 'INPUT',
                                 displayName: 'SmartTech',
-                                maxLength : 16,
+                                maxLength: 16,
                                 valueFn: function (data: alarmPanel): string {
                                     return data.smartTechNumber
                                 },
@@ -224,13 +224,13 @@ const Store = ({ year }: { year: string }) => {
                                     return true
                                 },
                                 onUpdate: function (value: string, currentData: alarmPanel, updatedData: alarmPanel): {} {
-                                    return {smartTechNumber: value}
+                                    return { smartTechNumber: value }
                                 }
                             },
                             {
-                                type : 'INPUT',
+                                type: 'INPUT',
                                 displayName: 'TXID',
-                                maxLength : 8,
+                                maxLength: 8,
                                 valueFn: function (data: alarmPanel): string {
                                     return data.txid
                                 },
@@ -238,13 +238,13 @@ const Store = ({ year }: { year: string }) => {
                                     return true
                                 },
                                 onUpdate: function (value: string, currentData: alarmPanel, updatedData: alarmPanel): {} {
-                                    return {txid: value}
+                                    return { txid: value }
                                 }
                             },
                             {
-                                type : 'INPUT',
+                                type: 'INPUT',
                                 displayName: 'IMEI',
-                                maxLength : 15,
+                                maxLength: 15,
                                 valueFn: function (data: alarmPanel): string {
                                     return data.imei
                                 },
@@ -252,13 +252,13 @@ const Store = ({ year }: { year: string }) => {
                                     return true
                                 },
                                 onUpdate: function (value: string, currentData: alarmPanel, updatedData: alarmPanel): {} {
-                                    return {imei: value}
+                                    return { imei: value }
                                 }
                             },
                             {
-                                type : 'INPUT',
+                                type: 'INPUT',
                                 displayName: 'ICCID',
-                                maxLength : 20,
+                                maxLength: 20,
                                 valueFn: function (data: alarmPanel): string {
                                     return data.iccid
                                 },
@@ -266,24 +266,36 @@ const Store = ({ year }: { year: string }) => {
                                     return true
                                 },
                                 onUpdate: function (value: string, currentData: alarmPanel, updatedData: alarmPanel): {} {
-                                    return {iccid: value}
+                                    return { iccid: value }
                                 }
                             },
-                        ]} 
-                        
-                        onCreate={function (data: alarmPanel): Promise<alarmPanel | null> {
+                        ]}
+
+                        onCreate={(data: alarmPanel): Promise<alarmPanel | null> => {
                             return createAlarmPanel(data, storeData.storeId)
-                        }} onUpdate={function (current: alarmPanel, updated: alarmPanel): Promise<alarmPanel | null> {
-                            throw Error("Unimplemented function")
+                        }}
+                        onUpdate={(current: alarmPanel, updated: alarmPanel): Promise<alarmPanel | null> => {
+                            // throw Error("Unimplemented function")
 
-                            // return updateAlarmPanel(current.alarmPanelId, updated)
-                        }} onDelete={function (data: alarmPanel): Promise<alarmPanel | null> {
-                            throw Error("Unimplemented function")
+                            return updateAlarmPanel(current.alarmPanelId, updated)
+                        }}
+                        onDelete={(data: alarmPanel): Promise<alarmPanel | null> => {
+                            // throw Error("Unimplemented function")
 
-                            // console.log(data.alarmPanelId)
-                            // return deleteAlarmPanel(data.alarmPanelId)
-                        }} 
-                        store={storeData}            
+                            console.log(data.alarmPanelId, storeData.storeId)
+                            return removeStoreToAlarmPanel(data.alarmPanelId, storeData.storeId)
+                        }}
+                        store={storeData}
+
+                        modalProps={{
+                            title:"Panels",
+                            getData: async ()  => {
+                                return await getAlarmPanels()
+                            },
+                            onAdd: async (data: alarmPanel): Promise<alarmPanel | null> => {
+                                return addStoreToAlarmPanel(data.alarmPanelId, storeData.storeId)
+                            },
+                        }}
                     />
                 }
 

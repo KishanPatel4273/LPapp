@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 
-import ClearIcon from '@mui/icons-material/Clear';
-import CheckIcon from '@mui/icons-material/Check';
 import InputField from "../InputField";
 import { dsm } from "../../../api";
+import DropDownField from "../DropDownField";
+import DeleteButton from "../buttons/DeleteButton";
+import SaveButton from "../buttons/SaveButton";
+import RemoveButton from "../buttons/RemoveButton";
+import AddButton from "../buttons/AddButton";
 
 
 export type dataMapType = "INPUT" | "DROPDOWN"
@@ -30,7 +33,6 @@ export type dataMapInput<T> = dataMapBase<T> & {
 export type dataMapDropDown<T> = dataMapBase<T> & {
     type: "DROPDOWN"
     options: string[]
-    defaultOption: string
 }
 
 export type dataMapProps<T> = dataMapInput<T> | dataMapDropDown<T>
@@ -43,10 +45,16 @@ type props<T> = {
     onDelete: (data: T) => void;
     onUpdate: (current: T, updated: T) => void
     editingMode: boolean;
+    editable?: boolean
+    deleteOrRemove: 'DELETE' | 'REMOVE'
+    saveOrAdd: 'SAVE' | 'ADD'
+    showEditingButtonDeleteOrRemove?: boolean
+    showEditingButtonSaveOrAdd?: boolean
+
     style?: {};
 }
 
-const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMode, style }: props<T>) => {
+const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMode, deleteOrRemove, saveOrAdd, editable = true, showEditingButtonDeleteOrRemove = false, showEditingButtonSaveOrAdd = false, style }: props<T>) => {
 
     const [isEditing, setIsEditing] = useState<boolean>(editingMode);
     const [data, setData] = useState(value)
@@ -70,26 +78,23 @@ const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMod
     return (
         <div
             style={{ ...styles.container, ...style }}
-            onDoubleClick={() => { setIsEditing(true) }}
+            onDoubleClick={() => {
+                if (editable) {
+                    setIsEditing(true)
+                }
+            }}
         >
-            {isEditing &&
+            {(isEditing || showEditingButtonDeleteOrRemove) &&
                 <div style={{ display: 'flex' }}>
-                    <button
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'center',   // Center the icon horizontally
-                            alignItems: 'center',       // Center the icon vertically
-                            width: '30px',              // Set width (smaller size)
-                            height: '30px',             // Set height (should be equal to width for a circle)
-                            borderRadius: '50%',        // Make the button circular
-                            border: 'none',             // Remove the border (optional)
-                            backgroundColor: 'transparent',    // Background color (optional)
-                            cursor: 'pointer'           // Change the cursor on hover
-                        }}
-                        onClick={() => { onDelete(data) }}
-                    >
-                        <ClearIcon style={{ color: 'red' }} />
-                    </button>
+                    {deleteOrRemove === 'DELETE' ?
+                        <DeleteButton
+                            onClick={() => { onDelete(data) }}
+                        />
+                        :
+                        <RemoveButton
+                            onClick={() => { onDelete(data) }}
+                        />
+                    }
                 </div>}
 
             {dataMap.map((dataMap: dataMapProps<T>,
@@ -102,7 +107,7 @@ const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMod
                             <InputField
                                 key={index + "_" + dataMap.valueFn(data)} // if the key changes this will cause a rerender of component
                                 value={dataMap.valueFn(data)}
-                                style={{ ...dataMap.style }}
+                                style={{ ...dataMap.style, margin: '5px' }}
                                 editMode={isEditing}
                                 maxLength={dataMap.maxLength}
                                 // @TODO add validate 
@@ -113,52 +118,34 @@ const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMod
                         )
                     case "DROPDOWN":
                         return (
-                            <>
-                                {isEditing ? (
-                                    <select
-                                        key={index + "_" + dataMap.valueFn(data)} // if the key changes this will cause a rerender of component
-                                        value={dataMap.defaultOption}
-                                        onChange={(e) => setUpdatedData({ ...updatedData, ...dataMap.onUpdate(e.target.value, data, updatedData) })}
-                                        style={{ ...dataMap.style }}
-                                    >
-                                        {dataMap.options.map(option => (
-                                            <option key={option} value={option}>
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
-                                ) : (
-                                    <div
-                                        style={{ display: 'flex', textAlign: 'center' }}
-                                    >
-                                        {dataMap.valueFn(data)}
-                                    </div>)
-                                }
-                            </>
+
+                            <DropDownField
+                                key={index + "_" + dataMap.valueFn(data)} // if the key changes this will cause a rerender of component
+                                defaultOption={dataMap.valueFn(data)}
+                                editMode={isEditing}
+                                options={dataMap.options}
+                                onUpdate={(value: string) => {
+                                    setUpdatedData({ ...updatedData, ...dataMap.onUpdate(value, data, updatedData) })
+                                }}
+                            />
+
                         )
                 }
 
 
             })}
 
-            {isEditing &&
+            {(isEditing || showEditingButtonSaveOrAdd) &&
                 <div style={{ display: 'flex' }}>
-                    <button
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'center',   // Center the icon horizontally
-                            alignItems: 'center',       // Center the icon vertically
-                            width: '30px',              // Set width (smaller size)
-                            height: '30px',             // Set height (should be equal to width for a circle)
-                            borderRadius: '50%',        // Make the button circular
-                            border: 'none',
-                            backgroundColor: 'transparent',    // Background color (optional)
-                            cursor: 'pointer'           // Change the cursor on hover
-                        }}
-                        onClick={onUpdateData}
-                    >
-                        <CheckIcon style={{ color: 'green' }} />
-                    </button>
+                    {saveOrAdd === 'SAVE' ?
+                        <SaveButton
+                            onClick={onUpdateData}
+                        />
+                        :
+                        <AddButton
+                            onClick={onUpdateData}
+                        />
+                    }
                 </div>}
         </div>
     )

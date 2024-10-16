@@ -2,27 +2,74 @@ import React, { useEffect, useState } from "react";
 import { store } from "../../../api";
 import AddIcon from '@mui/icons-material/Add';
 import CardData, { dataMapProps } from "./CardData";
+import ModelSelect from "./ModelSelect";
 
-type props<T> = {
+type createMode = "many-one-add" | "many-to-many-select-add"
+
+type modalProps<T> = {
+    title : string
+    /**
+     * Get T[], can be an api call that happens when the data is needed
+     */
+    getData: () => Promise<T[] | null>
+
+    /**
+     * used for saving or adding
+     */
+    // onUpdate: (current: T, updated: T) => Promise<T | null>
+
+    /**
+     * 
+     * api call to add data to store
+     */
+    onAdd: (data: T) => Promise<T | null>
+}
+
+export type propsBase<T> = {
     title: string
-    // object name refrencing id or id param
+    // object name referencing id or id param
     id: string
+    /**
+     * list of T that will be rendered
+     */
     dataList: T[]
+    /**
+    * default to use when creating a new entry
+    */
     defaultData: T
 
+    /**
+     * Format of rows
+     */
     dataMap: dataMapProps<T>[]
 
-
-    onCreate: (data: T) => Promise<T | null>
     onUpdate: (current: T, updated: T) => Promise<T | null>
     onDelete: (data: T) => Promise<T | null>
 
     store: store
 
+    onCreate: (data: T) => Promise<T | null>
+    /**
+     * create mode specifies how to handle adding to T to store
+     * "many-one-add" -> create a new entry
+     * "many-to-many-select-add" -> connect an existing entry or new entry to store
+     */
+    createMode: createMode
+
     style?: {}
 }
 
-const Card = <T extends {}>(props: props<T>) => {
+/**
+ * props for modal that is used for adding many to many relations to store
+ */
+type modalCreateProps<T> = propsBase<T> & {
+    createMode: 'many-to-many-select-add'
+    modalProps: modalProps<T>
+}
+
+type cardProps<T> = (propsBase<T> & { createMode: 'many-one-add' }) | modalCreateProps<T>
+
+const Card = <T extends {}>(props: cardProps<T>) => {
 
     const [isCreating, setIsCreating] = useState<boolean>(false);
     const [dataList, setDataList] = useState<T[]>(props.dataList);
@@ -41,7 +88,7 @@ const Card = <T extends {}>(props: props<T>) => {
 
         console.log("onUpdate call card: ", current, updated)
         const response: T | null = await props.onUpdate(current, updated)
-
+        console.log("onUpdate call card RESPONSE: ", response)
         if (response !== null) {
             setDataList(dataList.map(
                 (value: T, index: number, array: T[]) => {
@@ -51,6 +98,8 @@ const Card = <T extends {}>(props: props<T>) => {
                     return value
                 }))
         }
+
+        // TODO: IF IT FAILS NEED TO REVERT BACK TO OLD TEXT
     }
 
     const onDelete = async (data: T) => {
@@ -61,6 +110,16 @@ const Card = <T extends {}>(props: props<T>) => {
             setDataList(dataList.filter((value: T) => value[props.id] !== data[props.id]))
         }
 
+    }
+    
+    const onAdd = async (data : T) => {
+        if (props.createMode === 'many-to-many-select-add') {
+            const response = await props.modalProps.onAdd(data)
+
+            if (response !== null) {
+                setDataList([...dataList, response])
+            }
+        }
     }
 
     useEffect(() => {
@@ -86,9 +145,9 @@ const Card = <T extends {}>(props: props<T>) => {
                     index: number,
                     array: dataMapProps<T>[]) => {
                     return (
-                        <div 
+                        <div
                             key={dataMap.displayName}
-                            style={{marginLeft: '5px', marginRight: '5px'}}
+                            style={{ marginLeft: '5px', marginRight: '5px' }}
                         >
                             {dataMap.displayName}
                         </div>
@@ -105,6 +164,8 @@ const Card = <T extends {}>(props: props<T>) => {
                     onDelete={onDelete}
                     onUpdate={onUpdate}
                     editingMode={false}
+                    deleteOrRemove={props.createMode === 'many-one-add' ? 'DELETE' : 'REMOVE'}
+                    saveOrAdd={'SAVE'}
                 />
 
             })}
@@ -118,13 +179,40 @@ const Card = <T extends {}>(props: props<T>) => {
                 </div>
             </div>}
 
-            {isCreating && <CardData<T>
-                value={props.defaultData}
-                dataMap={props.dataMap}
-                onDelete={(data: T) => { setIsCreating(false) }}
-                onUpdate={(current: T, updated: T) => { onCreate(updated) }}
-                editingMode={true}
-            />}
+            {isCreating &&
+                (props.createMode === 'many-one-add' ? (
+                    <CardData<T>
+                        value={props.defaultData}
+                        dataMap={props.dataMap}
+                        onDelete={(data: T) => { setIsCreating(false) }}
+                        onUpdate={(current: T, updated: T) => { onCreate(updated) }}
+                        editingMode={true}
+                        deleteOrRemove={'DELETE'}
+                        saveOrAdd={'SAVE'}
+                    />
+                ) : (
+                    <ModelSelect<T>
+                        show={true}
+                        onClose={() => { setIsCreating(false); }}
+                        getData={props.modalProps.getData}
+                        title={props.modalProps.title} 
+                        id={props.id} 
+                        dataList={[]} 
+                        defaultData={props.defaultData} 
+                        dataMap={props.dataMap} 
+                        onUpdate={
+                            (current: T, updated : T) : Promise<T | null> => {
+                                onAdd(current)  
+                                return null
+                            }
+                        } 
+                        onDelete={() => {throw Error("onDelete in Modal should not be used")}} 
+                        store={props.store} 
+                        onCreate={props.onCreate} 
+                        createMode={"many-one-add"} 
+                    />
+                ))
+            }
 
         </div>
     )
@@ -136,7 +224,8 @@ const styles = {
         borderRadius: '10px',
         padding: '1rem',
         margin: '1rem',
-        minWidth: '200px',
+        minWidth: 'auto',
+
         // maxWidth: '400px',
         fontFamily: 'Arial, sans-serif',
         backgroundColor: '#fdfdfd',

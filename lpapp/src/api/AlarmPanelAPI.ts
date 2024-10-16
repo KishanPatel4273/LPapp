@@ -20,7 +20,7 @@ export type alarmPanel = {
  * Calls api to get alarm panels
  * @returns a list of alarmPanels
  */
-export const getAlarmPanels = async () : Promise<alarmPanel | null> => {
+export const getAlarmPanels = async () : Promise<alarmPanel[] | null> => {
     try {
         const response = await axios.get('/api/alarmpanels')
         
@@ -79,15 +79,22 @@ export const updateAlarmPanel = async (alarmPanelId : number, alarmPanel : alarm
             {
                 panelNumber : alarmPanel.panelNumber,
                 alarmPanelType : alarmPanel.alarmPanelType,
-                TXID : alarmPanel.txid,
+                txid : alarmPanel.txid,
                 smartTechNumber : alarmPanel.smartTechNumber,
-                IMEI : alarmPanel.imei,
-                ICCID : alarmPanel.iccid,
+                imei : alarmPanel.imei,
+                iccid : alarmPanel.iccid,
                 // stores : alarmPanel.stores
             }
         )
 
-        const response = await axios.put(`/api/alarmpanels${alarmPanelId}`, data)
+        const response = await axios.put(`/api/alarmpanels/${alarmPanelId}`, 
+            data,
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
 
         if (response.status === 200) {
             return response.data
@@ -105,7 +112,7 @@ export const addStoreToAlarmPanel = async (alarmCodeId : number, storeId: number
 
     try {
         
-        const response = await axios.put(`/connect!?alarm_panel_id=${alarmCodeId}&store_id=${storeId}`)
+        const response = await axios.put(`/api/alarmpanels/connect?alarmPanelId=${alarmCodeId}&storeId=${storeId}`)
 
         if (response.status === 200) {
             return response.data
@@ -119,10 +126,28 @@ export const addStoreToAlarmPanel = async (alarmCodeId : number, storeId: number
     return null
 }
 
+export const removeStoreToAlarmPanel = async (alarmCodeId : number, storeId: number) : Promise<alarmPanel | null> => {
+
+    try {
+        
+        const response = await axios.put(`/api/alarmpanels/disconnect?alarmPanelId=${alarmCodeId}&storeId=${storeId}`)
+
+        if (response.status === 200) {
+            return response.data
+        }
+
+    } catch (error) {
+        console.error('<removeStoreToAlarmPanel <AlarmPanels> Unexpected error:', error);
+
+    }
+
+    return null
+}
+
 export const deleteAlarmPanel = async (alarmPanelId : number) : Promise<alarmPanel | null> => {
 
     try {
-        const response = await axios.delete(`/api/alarmpanels${alarmPanelId}`)
+        const response = await axios.delete(`/api/alarmpanels/${alarmPanelId}`)
 
         if (response.status === 200) {
             return response.data
