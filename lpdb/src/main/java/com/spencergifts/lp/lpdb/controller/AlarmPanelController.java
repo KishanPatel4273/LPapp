@@ -5,11 +5,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spencergifts.lp.lpdb.dto.AlarmPanelDto;
-import com.spencergifts.lp.lpdb.model.AlarmCode;
 import com.spencergifts.lp.lpdb.model.AlarmPanel;
 import com.spencergifts.lp.lpdb.service.AlarmPanelService;
 
-import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
