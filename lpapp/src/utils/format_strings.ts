@@ -16,6 +16,9 @@ type char = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k'
  * @returns The padded or truncated string.
  */
 export const pad = (value: string, n: number, pad : char ="0"): string => {
+    if (value === undefined) {
+        return "PAD ERROR"
+    }
     if (n <= value.length) {
       return value.substring(0, n);
     }
@@ -30,10 +33,13 @@ export const pad = (value: string, n: number, pad : char ="0"): string => {
  * @returns `true` if the string contains only numbers, `false` otherwise.
  */
 export const isNumeric = (value: string): boolean => {
-    return /^\d+$/.test(value);
+    return value !== null ? /^\d+$/.test(value) : false;
 };
 
 export const formatPhoneNumber = (phoneNumber: string) => {
+    if (phoneNumber === null) {
+        return '(000) 000-0000'
+    }
     // Remove all non-numeric characters
     const cleaned = phoneNumber.replace(/\D/g, '');
     // Check if the cleaned number has at least 10 digits
@@ -45,7 +51,7 @@ export const formatPhoneNumber = (phoneNumber: string) => {
         // Return the formatted phone number
         return `(${part1}) ${part2}-${part3}`;
     }
-    return ""
+    return 'Phone Num Error'
 }
 
 export const clearFormattingPhoneNumber = (phoneNumber: string) => {

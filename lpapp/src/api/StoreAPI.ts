@@ -1,5 +1,6 @@
 import { alarmCode } from "./AlarmAPI";
 import { alarmPanel } from "./AlarmPanelAPI";
+import { getAPI } from "./api";
 
 export type storeType = "SPIRIT" | "SPENCER";
 
@@ -58,61 +59,10 @@ export type dsm = {
 
 
 export const getStores = async (): Promise<store[] | null> => {
-    try { 
-        const response = await fetch('/api/stores', {
-            method: 'GET',
-        });
-
-        // Check if the response status is not OK (e.g., 404, 500, etc.)
-        if (!response.ok) {
-            // Handle different status codes accordingly
-            return null
-        }
-
-        // Attempt to parse the response as JSON
-        const data: store[] = await response.json();
-
-        return data;
-
-    } catch (error: any) {
-        // Check if the error is due to a timeout or fetch abortion
-        if (error.name === 'AbortError') {
-            console.error('The request timed out.');
-        } else {
-            console.error('Error fetching the stores:', error.message || error);
-        }
-
-        // Return null to indicate failure
-        return null;
-    }
+    return await getAPI('/api/stores', 200)
 };
 
 export const getStore = async (storeNumber: string, year: string) : Promise<store | null> => {
-    try { 
-        const response = await fetch(`/api/stores/search?storeNumber=${storeNumber}&year=${year}`, {
-            method: 'GET',
-        });
 
-        // Check if the response status is not OK (e.g., 404, 500, etc.)
-        if (!response.ok) {
-            // Handle different status codes accordingly
-            return null
-        }
-
-        // Attempt to parse the response as JSON
-        const data: store = await response.json();
-
-        return data;
-
-    } catch (error: any) {
-        // Check if the error is due to a timeout or fetch abortion
-        if (error.name === 'AbortError') {
-            console.error('The request timed out.');
-        } else {
-            console.error('Error fetching the stores:', error.message || error);
-        }
-
-        // Return null to indicate failure
-        return null;
-    }
+    return await getAPI(`/api/stores/search?storeNumber=${storeNumber}&year=${year}`, 200)
 };
