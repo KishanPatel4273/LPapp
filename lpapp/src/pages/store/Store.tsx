@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { alarmCode, alarmPanel, createAlarmPanel, deleteAlarmPanel, store, updateAlarmPanel } from '../../api';
+import { alarmCode, alarmPanel, createAlarmPanel, deleteAlarmPanel, deleteOrder, order, store, updateAlarmPanel, updateOrder } from '../../api';
 import AddressCard from '../components/AddressCard';
 import { getStore, getStores } from '../../api/StoreAPI';
 import Card from '../components/card/Card';
@@ -8,6 +8,7 @@ import Card from '../components/card/Card';
 import { createAlarmCode, deleteAlarmCode, updateAlarmCode } from '../../api';
 import { clearFormattingPhoneNumber, formatPhoneNumber, isNumeric, pad } from '../../utils';
 import { addStoreToAlarmPanel, getAlarmPanels, removeStoreToAlarmPanel } from '../../api/AlarmPanelAPI';
+import OrderCard from '../components/order/OrderCard';
 
 
 type props = {
@@ -127,6 +128,7 @@ const Store = ({ year }: { year: string }) => {
                             valueFn: (data: alarmCode) => { return data.firstName + " " + data.lastName; },
                             maxLength: 128,
                             onUpdate: (value: string, currentData: alarmCode, updatedData) => {
+
                                 const vt = value.trim();
                                 const vl = vt.split(" ");
                                 if (vl.length <= 1) {
@@ -160,6 +162,7 @@ const Store = ({ year }: { year: string }) => {
                         return createAlarmCode(data, storeData.storeId)
                     }}
                     onUpdate={(current: alarmCode, updated: alarmCode) => {
+                        console.log("Update ALARM CODE")
                         return updateAlarmCode(updated, current.alarmCodeId)
                     }}
                     onDelete={(data: alarmCode) => {
@@ -288,8 +291,8 @@ const Store = ({ year }: { year: string }) => {
                         store={storeData}
 
                         modalProps={{
-                            title:"Panels",
-                            getData: async ()  => {
+                            title: "Panels",
+                            getData: async () => {
                                 return await getAlarmPanels()
                             },
                             onAdd: async (data: alarmPanel): Promise<alarmPanel | null> => {
@@ -298,7 +301,30 @@ const Store = ({ year }: { year: string }) => {
                         }}
                     />
                 }
+            </div>
 
+
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                {storeData &&
+                    <OrderCard
+                        title={'R&M'}
+                        id={'orderId'}
+                        defaultData={{
+                            shipTo: 'DSM',
+                            orderState: 'PLACED',
+                            orderItems: []
+                        }}
+                        onUpdate={async (current: order, updated: order): Promise<order | null>  => {
+                            return await updateOrder(updated, current.orderId)
+                        }} onDelete={async (data: order): Promise<order | null> => {
+                            return await deleteOrder(data.orderId)
+                        }}
+                        onCreate={function (data: order): Promise<order | null> {
+                            throw new Error('Function not implemented.');
+                        }}
+                        store={storeData}
+                    />
+                }
             </div>
         </div>
     )

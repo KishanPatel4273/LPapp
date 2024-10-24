@@ -9,7 +9,7 @@ import RemoveButton from "../buttons/RemoveButton";
 import AddButton from "../buttons/AddButton";
 
 
-export type dataMapType = "INPUT" | "DROPDOWN"
+export type dataMapType = "INPUT" | "DROPDOWN" | "VIEW"
 
 export type dataMapBase<T> = {
     type?: dataMapType
@@ -35,7 +35,13 @@ export type dataMapDropDown<T> = dataMapBase<T> & {
     options: string[]
 }
 
-export type dataMapProps<T> = dataMapInput<T> | dataMapDropDown<T>
+
+export type dataMapVIEW<T> = dataMapBase<T> & {
+    type: "VIEW"
+    maxLength?: number
+}
+
+export type dataMapProps<T> = dataMapInput<T> | dataMapDropDown<T> | dataMapVIEW<T>
 
 
 type props<T> = {
@@ -46,8 +52,8 @@ type props<T> = {
     onUpdate: (current: T, updated: T) => void
     editingMode: boolean;
     editable?: boolean
-    deleteOrRemove: 'DELETE' | 'REMOVE'
-    saveOrAdd: 'SAVE' | 'ADD'
+    deleteOrRemove: 'DELETE' | 'REMOVE' | null
+    saveOrAdd: 'SAVE' | 'ADD' | null
     showEditingButtonDeleteOrRemove?: boolean
     showEditingButtonSaveOrAdd?: boolean
 
@@ -84,7 +90,7 @@ const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMod
                 }
             }}
         >
-            {(isEditing || showEditingButtonDeleteOrRemove) &&
+            {deleteOrRemove && (isEditing || showEditingButtonDeleteOrRemove) &&
                 <div style={{ display: 'flex' }}>
                     {deleteOrRemove === 'DELETE' ?
                         <DeleteButton
@@ -130,12 +136,26 @@ const CardData = <T extends {}>({ value, dataMap, onDelete, onUpdate, editingMod
                             />
 
                         )
+                    case "VIEW":
+                        return (
+                            <InputField
+                                key={index + "_" + dataMap.valueFn(data)} // if the key changes this will cause a rerender of component
+                                value={dataMap.valueFn(data)}
+                                style={{ ...dataMap.style, margin: '5px' }}
+                                editMode={false}
+                                maxLength={dataMap.maxLength}
+                                // @TODO add validate 
+                                onUpdate={(value: string) => {
+                                    setUpdatedData({ ...updatedData, ...dataMap.onUpdate(value, data, updatedData) })
+                                }}
+                            />
+                        )
                 }
 
 
             })}
 
-            {(isEditing || showEditingButtonSaveOrAdd) &&
+            {saveOrAdd && (isEditing || showEditingButtonSaveOrAdd) &&
                 <div style={{ display: 'flex' }}>
                     {saveOrAdd === 'SAVE' ?
                         <SaveButton

@@ -51,7 +51,11 @@ const ModelSelect = <T extends {}>(props: props<T>) => {
     }
 
     return (
-        <Modal show={show} onHide={() => { handleClose(); props.onClose() }}>
+        <Modal 
+            show={show} 
+            size="lg"
+            onHide={() => { handleClose(); props.onClose() }}
+        >
             <Modal.Header closeButton>
                 <Modal.Title> {props.title} </Modal.Title>
             </Modal.Header>

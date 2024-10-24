@@ -88,7 +88,7 @@ const Card = <T extends {}>(props: cardProps<T>) => {
 
         console.log("onUpdate call card: ", current, updated)
         const response: T | null = await props.onUpdate(current, updated)
-        console.log("onUpdate call card RESPONSE: ", response)
+        console.log("onUpdate call card RESPONSE: ", await response)
         if (response !== null) {
             setDataList(dataList.map(
                 (value: T, index: number, array: T[]) => {
@@ -98,7 +98,7 @@ const Card = <T extends {}>(props: cardProps<T>) => {
                     return value
                 }))
         }
-
+        console.log("Update Failed")
         // TODO: IF IT FAILS NEED TO REVERT BACK TO OLD TEXT
     }
 
@@ -123,7 +123,7 @@ const Card = <T extends {}>(props: cardProps<T>) => {
     }
 
     useEffect(() => {
-        // keep data concurrent with parrent
+        // keep data concurrent with parent
         setDataList(props.dataList)
     }, [props.dataList])
 

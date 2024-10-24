@@ -1,4 +1,4 @@
-import { configHeaderJSON, deleteAPI, getAPI, postAPI } from "./api";
+import { configHeaderJSON, deleteAPI, getAPI, postAPI, putAPI } from "./api";
 
 export type product = {
     productId? : number,
@@ -15,11 +15,11 @@ export const getAllProducts = async (): Promise<product[] | null> => {
     return await getAPI(`/api/products/all`, 200)
 }
 
-export const getProduct = async (productId : number): Promise<product[] | null> => {
+export const getProduct = async (productId : number): Promise<product | null> => {
     return await getAPI(`/api/products/${productId}`, 200)
 }
 
-export const createProducts = async (product : product): Promise<product[] | null> => {
+export const createProduct = async (product : product): Promise<product | null> => {
     const data = JSON.stringify({
         name: product.name,
         active : product.active
@@ -27,14 +27,14 @@ export const createProducts = async (product : product): Promise<product[] | nul
     return await postAPI(`/api/products`, 201, data, configHeaderJSON)
 }
 
-export const updateProducts = async (product : product, productId: number): Promise<product[] | null> => {
+export const updateProduct = async (product : product, productId: number): Promise<product | null> => {
     const data = JSON.stringify({
         name: product.name,
         active : product.active
     })
-    return await postAPI(`/api/products/${productId}`, 201, data, configHeaderJSON)
+    return await putAPI(`/api/products/${productId}`, 201, data, configHeaderJSON)
 }
 
-export const deleteProduct = async (productId : number): Promise<product[] | null> => {
+export const deleteProduct = async (productId : number): Promise<product | null> => {
     return await deleteAPI(`/api/products/${productId}`, 200)
 }
