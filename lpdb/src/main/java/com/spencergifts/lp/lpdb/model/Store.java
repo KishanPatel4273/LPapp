@@ -9,6 +9,8 @@ import com.spencergifts.lp.lpdb.enums.StoreType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +30,7 @@ public class Store {
     @Column(name = "store_id", unique = true, nullable = false)
     private long storeId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "store_type", nullable = false)
     private StoreType storeType;
 

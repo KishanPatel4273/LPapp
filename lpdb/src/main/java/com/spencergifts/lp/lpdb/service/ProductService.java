@@ -36,10 +36,11 @@ public class ProductService {
 
     public Product create(Product product) {
 
-        boolean valid = this.findAll().stream()
-                .map(p -> p.getName().toLowerCase().equals(product.getName().toLowerCase()))
+        boolean valid = !this.findAll().stream()
+                .map(p -> !product.equals(p) &&  p.getName().toLowerCase().equals(product.getName().toLowerCase()))
                 .reduce(false, (a, b) -> a || b);
-
+                
+        System.err.println("TODO product create verify");
         if (valid) {
             return this.productRepository.save(product);
         }

@@ -68,7 +68,7 @@ public class StoreController {
         try {
             System.err.println(stores);
             this.storeService.create(stores);
-            return ResponseEntity.ok().body(null);
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }

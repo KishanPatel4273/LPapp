@@ -81,7 +81,7 @@ public class AlarmCodeController {
     ResponseEntity<AlarmCodeDto> update(@RequestBody AlarmCode alarmCode, @PathVariable long alarm_code_id) {
         try {
             this.alarmCodeService.update(alarmCode, alarm_code_id);
-            return ResponseEntity.ok().body(null);
+            return ResponseEntity.status(HttpStatus.CREATED).body(this.alarmCodeService.convertToDto(this.alarmCodeService.findById(alarm_code_id).get()));
         } catch (Exception e) { 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

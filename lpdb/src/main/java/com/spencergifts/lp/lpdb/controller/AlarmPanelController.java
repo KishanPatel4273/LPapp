@@ -95,7 +95,7 @@ public class AlarmPanelController {
 
             this.alarmPanelService.disconnectStore(alarmPanelId, storeId);
 
-            return ResponseEntity.ok()
+            return ResponseEntity.status(HttpStatus.CREATED)
                     .body(this.alarmPanelService.convertToDto(this.alarmPanelService.findById(alarmPanelId).get()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
